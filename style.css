@@ -1,0 +1,1195 @@
+/* --- Змінні та налаштування тем --- */
+:root {
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --danger-color: #dc3545;
+    --danger-shadow: rgba(220, 53, 69, 0.25);
+    --accent-border-color: #d3d9df;
+    --bg-color: #f8f9fa;
+    --surface-color: #ffffff;
+    --surface-hover-color: #e9ecef;
+    --surface-highlight-color: #f0f3f5;
+    --text-color: #212529;
+    --text-muted-color: #6c757d;
+    --border-color: #dee2e6;
+    --button-text-color: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --animation-glow-color: #FFD700;
+    --row-highlight-color: #e7f5ff;
+}
+
+[data-theme="dark"] {
+    --primary-color: #0d6efd;
+    --primary-hover: #3d8bfd;
+    --danger-color: #ff4d4d;
+    --danger-shadow: rgba(255, 77, 77, 0.3);
+    --accent-border-color: #444c56;
+    --bg-color: #121212;
+    --surface-color: #1e1e1e;
+    --surface-hover-color: #2a2a2a;
+    --surface-highlight-color: #21262d;
+    --text-color: #e8e6e3;
+    --text-muted-color: #8b949e;
+    --border-color: #30363d;
+    --button-text-color: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --animation-glow-color: #32CD32;
+     --row-highlight-color: #2d3748;
+}
+
+[data-theme="dark-purple"] {
+    --primary-color: #6b21a8;
+    --primary-hover: #8b5cf6;
+    --danger-color: #f43f5e;
+    --danger-shadow: rgba(244, 63, 94, 0.3);
+    --accent-border-color: var(--primary-color);
+    --bg-color: #120f1a;
+    --surface-color: #1f1a2e;
+    --surface-hover-color: #2e2740;
+    --surface-highlight-color: #28213b;
+    --text-color: #f4f4f4;
+    --text-muted-color: #a8a29e;
+    --border-color: #3a3252;
+    --button-text-color: #ffffff;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    --animation-glow-color: #FFD700;
+    --row-highlight-color: #382e55;
+}
+
+[data-theme="dark-bordeaux"] {
+    --primary-color: #991b1b;
+    --primary-hover: #b91c1c;
+    --danger-color: #ef4444;
+    --danger-shadow: rgba(239, 68, 68, 0.3);
+    --accent-border-color: var(--primary-color);
+    --bg-color: #131313;
+    --surface-color: #2b1a1a;
+    --surface-hover-color: #402727;
+    --surface-highlight-color: #3b2121;
+    --text-color: #f5f5f5;
+    --text-muted-color: #a3a3a3;
+    --border-color: #523232;
+    --button-text-color: #ffffff;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    --animation-glow-color: #00FFFF;
+    --row-highlight-color: #502d2d;
+}
+
+[data-theme="pastel-pink"] {
+    --primary-color: #ec407a;
+    --primary-hover: #d81b60;
+    --danger-color: #e57373;
+    --danger-shadow: rgba(229, 115, 115, 0.3);
+    --accent-border-color: #f48fb1;
+    --bg-color: #f9e1e8;
+    --surface-color: #fff;
+    --surface-hover-color: #fdd8e3;
+    --surface-highlight-color: #fbe9eb;
+    --text-color: #263238;
+    --text-muted-color: #607d8b;
+    --border-color: #e0e0e0;
+    --button-text-color: #fff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --animation-glow-color: #f06292;
+    --row-highlight-color: #f5b9c6;
+}
+
+[data-theme="dark-green"] {
+    --primary-color: #2e7d32;
+    --primary-hover: #4caf50;
+    --danger-color: #ef5350;
+    --danger-shadow: rgba(239, 83, 80, 0.3);
+    --accent-border-color: var(--primary-color);
+    --bg-color: #121a12;
+    --surface-color: #1b2b1b;
+    --surface-hover-color: #2a4a2a;
+    --surface-highlight-color: #253f25;
+    --text-color: #e8f5e9;
+    --text-muted-color: #a5d6a7;
+    --border-color: #388e3c;
+    --button-text-color: #ffffff;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --animation-glow-color: #81c784;
+    --row-highlight-color: #335a33;
+}
+
+/* --- Базові стилі та структура сторінки --- */
+html {
+    font-size: clamp(15px, 1.6vw, 18px);
+    overflow-x: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1 0 auto;
+}
+
+.container {
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+/* --- Модальні вікна та сповіщення --- */
+#rules-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+#rules-modal.visible {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    color: #333;
+    padding: 25px 30px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+}
+
+#agree-button {
+    background-color: #16a085;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#agree-button:hover {
+    background-color: #117a65;
+}
+
+#copy-notification {
+    margin-left: 8px;
+    font-style: italic;
+    color: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+#copy-notification.visible {
+    opacity: 1;
+}
+
+/* --- Заголовок, перемикач теми та навігація --- */
+.title-container {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 12px;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 0;
+}
+
+.theme-switcher-container {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background-color: var(--surface-color);
+    padding: 0.5rem 0.8rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s, border-color 0.3s, width 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.theme-switcher-container label {
+    margin: 0;
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.theme-select-wrapper {
+    position: relative;
+}
+
+.theme-button {
+    background-color: var(--surface-hover-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 4px 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: background-color 0.2s, border-color 0.2s, width 0.4s cubic-bezier(0.65, 0, 0.35, 1) 0.1s;
+}
+
+.theme-button:not(.animating):hover {
+    border-color: var(--primary-color);
+}
+
+.theme-text {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(3px);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.theme-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.theme-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 5px;
+    width: max-content;
+    max-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: top center;
+    transition: opacity 0.2s, visibility 0.2s, transform 0.3s;
+}
+
+.theme-dropdown.align-right {
+    left: auto;
+    right: 0;
+    transform: none;
+    transform-origin: top right;
+}
+
+.theme-dropdown.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.theme-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.theme-option:hover {
+    background-color: var(--surface-hover-color);
+}
+
+.flyout-nav-trigger-zone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5vh;
+    z-index: 2000;
+}
+
+.flyout-nav {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -150%);
+    opacity: 0;
+    background-color: var(--surface-color);
+    padding: 0.75rem;
+    border-radius: 50px;
+    box-shadow: var(--shadow);
+    transition: transform 0.6s ease-in-out 0.1s, opacity 0.7s ease-in-out, background 0.3s;
+}
+
+.flyout-nav-trigger-zone:hover .flyout-nav {
+    transform: translate(-50%, 15px);
+    opacity: 1;
+}
+
+.flyout-nav-content {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.nav-option {
+    display: block;
+    padding: 0.6rem 1.2rem;
+    background-color: var(--surface-hover-color);
+    border-radius: 50px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.nav-option:hover {
+    background-color: var(--surface-hover-color);
+    border-color: var(--border-color);
+}
+
+/* --- Панель керування (інпути, селекти) --- */
+.controls-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1.5%;
+    width: 100%;
+    font-size: 1rem;
+    padding: 1.5rem;
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    box-sizing: border-box;
+    transition: background-color 0.3s;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.control-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.control-group.year-group {
+    flex: 1 1 6.5%;
+}
+.control-group.period-group {
+    flex: 1 1 11.3%;
+}
+.control-group.template-group {
+    flex: 1 1 28.2%;
+}
+.control-group.hours-group {
+    flex: 1 1 32.9%;
+}
+.control-group.checkbox-group {
+    flex: 1 1 15.1%;
+    padding-bottom: 10px;
+}
+
+select,
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    font-size: inherit;
+    box-sizing: border-box;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+#template .option-header {
+    font-weight: bold;
+    color: var(--text-color);
+    background-color: var(--surface-hover-color);
+}
+
+#template .indented-option {
+    padding-left: 15px;
+}
+
+.hours-inputs {
+    display: flex;
+    gap: 4px;
+}
+
+.hours-inputs .day {
+    flex: 1;
+    text-align: center;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    height: 100%;
+    cursor: pointer;
+}
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    accent-color: var(--primary-color);
+}
+
+.input-error {
+    border-color: var(--danger-color) !important;
+    box-shadow: 0 0 0 0.2rem var(--danger-shadow);
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* --- Підказки (Tooltips) --- */
+.tooltip-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background-color: var(--text-muted-color);
+    color: var(--surface-color);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: help;
+    user-select: none;
+    transition: background-color 0.3s;
+}
+
+.tooltip-icon-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 250px;
+    background-color: var(--surface-hover-color);
+    color: var(--text-color);
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 135%;
+    left: 50%;
+    margin-left: -125px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.8rem;
+    font-weight: normal;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.tooltip-icon-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.main-tooltip-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: 15px;
+    margin-bottom: -15px;
+}
+
+.main-tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    width: 380px;
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    text-align: left;
+    border-radius: 8px;
+    padding: 15px;
+    position: absolute;
+    z-index: 100;
+    top: 100%;
+    left: 0;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    font-weight: normal;
+    line-height: 1.5;
+    user-select: text;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+    transition-delay: 0.5s;
+}
+
+.main-tooltip-container .tooltip-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 15px;
+}
+
+.main-tooltip-container:hover .main-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 0s;
+}
+
+/* --- Кнопки "Розрахувати" та "Завантажити" --- */
+#button-container-wrapper {
+    width: 80%;
+    max-width: 900px;
+    margin: 20px auto 0;
+    display: flex;
+    align-items: stretch;
+    gap: 15px;
+}
+
+#button-wrapper.star-border-container {
+    flex: 1 1 auto;
+    margin: 0;
+    position: relative;
+    border-radius: 25px;
+    padding: 3px;
+    display: flex;
+    background: conic-gradient(from var(--angle), var(--surface-color), var(--animation-glow-color) 20%, var(--surface-color) 40%);
+    animation: rotate-gradient 4s linear infinite;
+}
+
+#button-wrapper.star-border-container:has(#showBtn:disabled) {
+    animation: none;
+    background: none;
+}
+
+#showBtn.inner-content {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--button-text-color);
+    background-color: var(--primary-color);
+    padding: 16px 20px;
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-sizing: border-box;
+}
+
+#showBtn.inner-content:hover {
+    background-color: var(--primary-hover);
+}
+
+#showBtn:disabled {
+    background-color: var(--text-muted-color);
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.pdf-button-styled {
+    flex: 0 0 auto;
+    display: none;
+    padding: 14px 24px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--button-text-color);
+    background-color: var(--primary-color);
+    border: 2px solid transparent;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    box-shadow: var(--shadow);
+    white-space: nowrap;
+}
+
+.pdf-button-styled:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--animation-glow-color);
+}
+
+.pdf-button-styled:disabled {
+    background-color: var(--text-muted-color);
+    opacity: 0.65;
+    cursor: not-allowed;
+    border-color: transparent;
+}
+
+/* --- Таблиця результатів --- */
+#results-wrapper {
+    display: none;
+    margin-top: 20px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    margin-top: 1rem;
+    width: 100%;
+    background-color: var(--surface-color);
+    font-size: 0.95rem;
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    overflow: hidden;
+    table-layout: fixed;
+    transition: background-color 0.3s;
+}
+
+th,
+td {
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    text-align: center;
+    transition: border-color 0.3s, background-color 0.3s, width 0.4s ease-in-out;
+    overflow-wrap: break-word;
+}
+
+th:first-child,
+td:first-child {
+    width: 13%;
+    text-align: center;
+    background-color: var(--surface-highlight-color);
+    font-weight: 500;
+    border-right: 2px solid var(--accent-border-color);
+}
+
+th {
+    background-color: var(--surface-hover-color);
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent-border-color);
+}
+
+#results .expanded-col {
+    width: 280px;
+}
+
+tr.row-highlighted td {
+    background-color: var(--row-highlight-color);
+}
+
+#results-body td:first-child {
+    position: relative;
+    padding-left: 30px;
+}
+
+.row-selector-arrow {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 8px solid var(--text-muted-color);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, border-left-color 0.2s, transform 0.3s ease;
+    transform: translateY(-50%);
+}
+
+#results-body tr:hover .row-selector-arrow {
+    opacity: 1;
+}
+
+.row-selector-arrow:hover {
+    border-left-color: var(--primary-color);
+}
+
+.row-highlighted .row-selector-arrow {
+   opacity: 1;
+   border-left-color: var(--primary-color);
+   transform: translateY(-50%) rotate(90deg);
+}
+
+/* --- Додаткові акценти для тем --- */
+[data-theme="dark-purple"] h1,
+[data-theme="dark-bordeaux"] h1,
+[data-theme="dark-blue"] h1,
+[data-theme="dark-green"] h1 {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark-purple"] h1 {
+    background-image: linear-gradient(135deg, #c084fc, #a78bfa);
+}
+
+[data-theme="dark-bordeaux"] h1 {
+    background-image: linear-gradient(135deg, #cc3737, #c30707);
+}
+
+[data-theme="dark-green"] h1 {
+    background-image: linear-gradient(135deg, #81c784, #4caf50);
+}
+
+[data-theme="pastel-pink"] h1 {
+    color: var(--primary-color);
+}
+
+[data-theme="dark-purple"] .flyout-nav {
+    background: linear-gradient(135deg, #3b0764, #5b21b6);
+    border: 1px solid var(--primary-color);
+}
+
+[data-theme="dark-bordeaux"] .flyout-nav {
+    background: linear-gradient(135deg, #640707, #b91c1c);
+    border: 1px solid var(--primary-color);
+}
+
+[data-theme="dark-green"] .flyout-nav {
+    background: linear-gradient(135deg, #1b5e20, #388e3c);
+    border: 1px solid var(--primary-color);
+}
+
+[data-theme="pastel-pink"] .flyout-nav {
+    background-color: var(--surface-color);
+    border: 1px solid var(--accent-border-color);
+}
+
+[data-theme="pastel-pink"] .nav-option {
+    background-color: var(--surface-hover-color);
+    color: var(--text-color);
+    border: 1px solid transparent;
+}
+
+[data-theme="pastel-pink"] .nav-option:hover {
+    background-color: var(--surface-color);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark-purple"] select:focus,
+[data-theme="dark-purple"] input[type="number"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(107, 33, 168, 0.4);
+}
+
+[data-theme="dark-bordeaux"] select:focus,
+[data-theme="dark-bordeaux"] input[type="number"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(185, 28, 28, 0.4);
+}
+
+[data-theme="dark-green"] select:focus,
+[data-theme="dark-green"] input[type="number"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.4);
+}
+
+[data-theme="pastel-pink"] select:focus,
+[data-theme="pastel-pink"] input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(244, 143, 177, 0.25);
+}
+
+[data-theme="pastel-pink"] .star-border-container {
+    background: conic-gradient(from var(--angle), var(--surface-color), var(--animation-glow-color) 20%, var(--surface-color) 40%);
+}
+
+/* --- Стилі для статичних сторінок (Умови, Політика) --- */
+.static-content {
+    background-color: var(--surface-color);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin: 1rem auto;
+    max-width: 860px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.static-content h2 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.static-content h2:first-of-type {
+    margin-top: 0;
+}
+
+.static-content p {
+    margin-bottom: 1rem;
+}
+
+/* --- Футер (підвал) сайту --- */
+.site-footer {
+    background-color: var(--surface-color);
+    color: var(--text-muted-color);
+    padding: 1.5rem 1rem;
+    margin-top: 3rem;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    transition: background-color 0.3s, border-top-color 0.3s;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.site-footer a {
+    color: var(--text-muted-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.site-footer a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+.footer-separator {
+    color: var(--text-muted-color);
+}
+
+/* --- Анімації та спеціальна тема "Psychedelic Rainbow" --- */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotate-gradient {
+    to {
+        --angle: 360deg;
+    }
+}
+
+@keyframes rainbow-bg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes text-flicker {
+    0%, 100% { text-shadow: 0 0 5px #ff00ff, 0 0 10px #00ffff, 0 0 15px #ffff00; }
+    25% { text-shadow: 0 0 5px #ffff00, 0 0 10px #ff00ff, 0 0 15px #00ffff; }
+    50% { text-shadow: 0 0 5px #00ffff, 0 0 10px #ffff00, 0 0 15px #ff00ff; }
+    75% { text-shadow: 0 0 5px #ff00ff, 0 0 10px #ffff00, 0 0 15px #00ffff; }
+}
+
+@keyframes border-flicker {
+    0% { border-image-source: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); }
+    25% { border-image-source: linear-gradient(to right, violet, red, orange, yellow, green, blue, indigo); }
+    50% { border-image-source: linear-gradient(to right, indigo, violet, red, orange, yellow, green, blue); }
+    75% { border-image-source: linear-gradient(to right, blue, indigo, violet, red, orange, yellow, green); }
+    100% { border-image-source: linear-gradient(to right, green, blue, indigo, violet, red, orange, yellow); }
+}
+
+@keyframes nyan-fly {
+    0% { left: 110%; }
+    100% { left: -10%; }
+}
+
+@keyframes nyan-bob {
+    0%, 100% { top: 0; }
+    50% { top: 10px; }
+}
+
+@keyframes rainbow-trail {
+    0% { background-position: 0 0; }
+    100% { background-position: -200px 0; }
+}
+
+[data-theme="psychedelic-rainbow"] {
+    --primary-color: #ff00ff;
+    --primary-hover: #ffff00;
+    --danger-color: #ff0000;
+    --danger-shadow: rgba(255, 0, 0, 0.5);
+    --accent-border-color: #00ffff;
+    --bg-color: #000;
+    --surface-color: rgba(20, 20, 20, 0.8);
+    --surface-hover-color: rgba(40, 40, 40, 0.9);
+    --surface-highlight-color: rgba(30, 30, 30, 0.85);
+    --text-color: #fff;
+    --text-muted-color: #eee;
+    --border-color: #00ffff;
+    --button-text-color: #000;
+    --shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    --animation-glow-color: #ff00ff;
+    --row-highlight-color: rgba(255, 0, 255, 0.3);
+}
+
+[data-theme="psychedelic-rainbow"] body {
+    background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+    background-size: 1800% 1800%;
+    animation: rainbow-bg 18s ease infinite;
+    overflow: hidden;
+}
+
+[data-theme="psychedelic-rainbow"] h1,
+[data-theme="psychedelic-rainbow"] .theme-option[data-value="psychedelic-rainbow"] {
+    animation: text-flicker 1.5s linear infinite;
+}
+
+[data-theme="psychedelic-rainbow"] .controls-wrapper,
+[data-theme="psychedelic-rainbow"] table,
+[data-theme="psychedelic-rainbow"] .theme-switcher-container,
+[data-theme="psychedelic-rainbow"] .flyout-nav {
+    border: 2px solid;
+    animation: border-flicker 2s linear infinite;
+    border-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) 1;
+}
+
+#nyan-cat-container {
+    position: fixed;
+    top: 20%;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: nyan-fly 7s linear infinite;
+}
+
+.nyan-cat {
+    position: absolute;
+    width: 97px;
+    height: 58px;
+    animation: nyan-bob 0.4s linear infinite;
+}
+
+.nyan-cat .body {
+    width: 60px;
+    height: 40px;
+    background: #ffcc99;
+    border: 2px solid #333;
+    border-radius: 10px;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    background-image:
+        radial-gradient(#ff99cc 15%, transparent 16%),
+        radial-gradient(#ff99cc 15%, transparent 16%);
+    background-size: 15px 15px;
+    background-position: 5px 5px, 15px 15px;
+}
+
+.nyan-cat .head {
+    width: 40px;
+    height: 35px;
+    background: #999;
+    border: 2px solid #333;
+    border-radius: 5px;
+    position: absolute;
+    top: 12px;
+    left: -5px;
+}
+
+.nyan-cat .ear {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 12px solid #888;
+    position: absolute;
+    top: -10px;
+}
+.nyan-cat .ear:first-child { left: 2px; }
+.nyan-cat .ear:last-child { right: 2px; }
+
+.nyan-cat .eye {
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border: 2px solid #333;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+}
+.nyan-cat .eye:before {
+    content: '';
+    width: 3px;
+    height: 3px;
+    background: #333;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+.nyan-cat .eye:first-child { left: 5px; }
+.nyan-cat .eye:last-child { right: 5px; }
+
+.nyan-cat .mouth {
+    width: 3px;
+    height: 5px;
+    border: 2px solid #333;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-radius: 0 0 0 10px;
+    position: absolute;
+    bottom: 5px;
+    left: 17px;
+}
+
+.nyan-cat .tail {
+    width: 20px;
+    height: 20px;
+    background: #999;
+    border: 2px solid #333;
+    position: absolute;
+    top: 15px;
+    right: -10px;
+}
+
+.nyan-cat .leg {
+    width: 10px;
+    height: 15px;
+    background: #999;
+    border: 2px solid #333;
+    position: absolute;
+    bottom: -10px;
+}
+.nyan-cat .leg:nth-of-type(1) { left: 5px; }
+.nyan-cat .leg:nth-of-type(2) { left: 20px; }
+.nyan-cat .leg:nth-of-type(3) { right: 25px; }
+.nyan-cat .leg:nth-of-type(4) { right: 10px; }
+
+.nyan-cat .rainbow {
+    position: absolute;
+    width: 200px;
+    height: 40px;
+    top: 10px;
+    left: 60px;
+    z-index: -1;
+    background: linear-gradient(to bottom,
+        #ff0000 0%, #ff0000 16.66%,
+        #ff9900 16.66%, #ff9900 33.33%,
+        #ffff00 33.33%, #ffff00 50%,
+        #33ff00 50%, #33ff00 66.66%,
+        #0099ff 66.66%, #0099ff 83.33%,
+        #6633ff 83.33%, #6633ff 100%
+    );
+    background-size: 100% 100%;
+    animation: rainbow-trail 0.2s linear infinite;
+}
+
+/* --- Адаптивність (Media Queries) --- */
+@media (max-width: 1200px) {
+    .controls-wrapper {
+        gap: 1rem;
+    }
+
+    .control-group.year-group,
+    .control-group.period-group {
+        flex-basis: 48%;
+    }
+
+    .control-group.template-group,
+    .control-group.hours-group,
+    .control-group.checkbox-group {
+        flex-basis: 100%;
+    }
+
+    .control-group.checkbox-group {
+        padding-bottom: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .theme-switcher-container {
+        position: static;
+        margin: 1rem auto 0;
+    }
+
+    .title-container {
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    h1,
+    .main-tooltip-container {
+        margin-top: 0;
+    }
+
+    .main-tooltip-text {
+        width: 90vw;
+    }
+
+    .controls-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .control-group {
+        flex-basis: auto !important;
+        width: 100%;
+    }
+
+    #button-container-wrapper {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .pdf-button-styled {
+        width: 100%;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .footer-separator {
+        display: none;
+    }
+}

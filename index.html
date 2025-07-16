@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор норми робочого часу</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .day-input-wrapper {
+            text-align: center;
+        }
+        .day-label {
+            display: block;
+            margin-bottom: 4px;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.js"></script>
+    <script src="firebase-config.js" type="module"></script>
+    <script src="main.js" type="module"></script>
+</head>
+<body>
+    <div id="rules-modal">
+        <div class="modal-content">
+            <h2>Умови користування</h2>
+            <p>
+                Натискаючи "Погоджуюсь", ви підтверджуєте, що ознайомилися з <a href="terms.html" target="_blank">Умовами користування</a> та <a href="privacy.html" target="_blank">Політикою конфіденційності</a> сайту.
+            </p>
+            <button id="agree-button">Погоджуюсь</button>
+        </div>
+    </div>
+        <div id="nyan-cat-container" style="display: none;">
+            <div class="nyan-cat">
+                <div class="body"></div>
+                <div class="head">
+                    <div class="ear"></div>
+                    <div class="ear"></div>
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                    <div class="mouth"></div>
+                </div>
+                <div class="tail"></div>
+                <div class="leg"></div>
+                <div class="leg"></div>
+                <div class="leg"></div>
+                <div class="leg"></div>
+                <div class="rainbow"></div>
+            </div>
+        </div>
+            <main class="main-content">
+            <div class="theme-switcher-container">
+                <label>Тема:</label>
+                <div class="theme-select-wrapper">
+                    <div id="theme-button" class="theme-button" tabindex="0">
+                        <span class="theme-text"></span>
+                    </div>
+                    <div id="theme-dropdown" class="theme-dropdown">
+                        <div class="theme-option" data-value="light">Світла</div>
+                        <div class="theme-option" data-value="pastel-pink">Світла (рожева)</div>
+                        <div class="theme-option" data-value="dark">Темна</div>
+                        <div class="theme-option" data-value="dark-purple">Темна (фіолетова)</div>
+                        <div class="theme-option" data-value="dark-bordeaux">Темна (червона)</div>
+                        <div class="theme-option" data-value="dark-green">Темна (зелена)</div>
+                    </div>
+                </div>
+            </div>
+
+                <div class="flyout-nav-trigger-zone">
+                    <div class="flyout-nav">
+                        <div class="flyout-nav-content">
+                            <a href="" class="nav-option">Калькулятор</a>
+                        </div>
+                    </div>
+                  </div>
+
+    <div class="container">
+        <div class="title-container">
+            <h1>Калькулятор норми робочого часу</h1>
+            <div class="main-tooltip-container">
+                <span class="tooltip-icon">?</span>
+                <div class="main-tooltip-text">
+                    Вітаю у калькуляторі робочого часу. Цей калькулятор створений щоб допомогти вам розрахувати ваш робочий час, кількість робочих днів, скорочень, годин за місяць тощо.
+                    <br><br>
+                    Розрахунок йде згідно чинного законодавства (КЗпП).
+                    <br>
+                    Останнє оновлення: 09.07.2025
+                    <br><br>
+                    Якщо ви побачили нову норму законодавства, що вийшла після ^ дати останнього оновлення, та відноситься до будь-яких розрахунків наведених у калькуляторі, прохання звернутися на пошту з посиланням на відповідну норму, калькулятор буде оновлено у найближчий час.
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-wrapper">
+            <div class="control-group year-group">
+                <label for="year">Рік:</label>
+                <select id="year">
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                </select>
+            </div>
+            <div class="control-group period-group">
+                <label for="month">Період:</label>
+                <select id="month">
+                    <option value="0">Весь рік</option>
+                    <option value="Q1">Перший квартал</option>
+                    <option value="1">Січень</option>
+                    <option value="2">Лютий</option>
+                    <option value="3">Березень</option>
+                    <option value="Q2">Другий квартал</option>
+                    <option value="4">Квітень</option>
+                    <option value="5">Травень</option>
+                    <option value="6">Червень</option>
+                    <option value="Q3">Третій квартал</option>
+                    <option value="7">Липень</option>
+                    <option value="8">Серпень</option>
+                    <option value="9">Вересень</option>
+                    <option value="Q4">Четвертий квартал</option>
+                    <option value="10">Жовтень</option>
+                    <option value="11">Листопад</option>
+                    <option value="12">Грудень</option>
+                </select>
+            </div>
+            <div class="control-group template-group">
+                <label for="template">
+                    Шаблон тижня:
+                    <span class="tooltip-icon-container">
+                         <span class="tooltip-icon">?</span>
+                         <span class="tooltip-text">При обраному графіку (менше 40 годин на тиждень) передсвяткові дні не скорочуються на 1 годину.</span>
+                    </span>
+                </label>
+                <select id="template">
+                    <option value=""> Оберіть шаблон або введіть показники → </option>
+                    <option class="option-header" disabled>5-денний</option>
+                    <option class="indented-option" value="8,8,8,8,8,0,0">40 годин (пн.-пт. — 8 год.)</option>
+                    <option class="indented-option" value="8,8,8,8,7,0,0">39 годин (пн.-чт. — 8 год., пт. — 7 год.)</option>
+                    <option class="indented-option" value="7.8,7.8,7.8,7.8,7.8,0,0">39 годин (пн.-пт. — 7 год. 48 хв.)</option>
+                    <option class="indented-option" value="7.7,7.7,7.7,7.7,7.7,0,0">38,5 годин (пн.-пт. — 7 год. 42 хв.)</option>
+                    <option class="indented-option" value="7.2,7.2,7.2,7.2,7.2,0,0">36 годин (пн.-пт. — 7 год. 12 хв.)</option>
+                    <option class="indented-option" value="8,7,7,7,7,0,0">36 годин (пн. — 8 год., вт.-пт. — 7 год.)</option>
+                    <option class="indented-option" value="6.6,6.6,6.6,6.6,6.6,0,0">33 години (пн.-пт. — 6 год. 36 хв.)</option>
+                    <option class="indented-option" value="6,6,6,6,6,0,0">30 годин (пн.-пт. — 6 год.)</option>
+                    <option class="indented-option" value="5,5,5,5,5,0,0">25 годин (пн.-пт. — 5 год.)</option>
+                    <option class="indented-option" value="4.8,4.8,4.8,4.8,4.8,0,0">24 години (пн.-пт. — 4 год. 48 хв.)</option>
+                    <option class="indented-option" value="5,5,5,5,4,0,0">24 години (пн.-чт. — 5 год., пт. — 4 год.)</option>
+                    <option class="indented-option" value="4,4,4,4,4,0,0">20 годин (пн.-пт. — 4 год.)</option>
+                    <option class="indented-option" value="3.6,3.6,3.6,3.6,3.6,0,0">18 годин (пн.-пт. — 3 год. 36 хв.)</option>
+                    <option class="indented-option" value="12,12,12,12,12,0,0">60 годин (пн.-пт. — 12 год.)</option>
+
+                    <option class="option-header" disabled>6-денний</option>
+                    <option class="indented-option" value="7,7,7,7,7,5,0">40 годин (пн.-пт. — 7 год., сб. — 5 год.)</option>
+                    <option class="indented-option" value="7,7,7,7,7,4,0">39 годин (пн.-пт. — 7 год., сб. — 4 год.)</option>
+                    <option class="indented-option" value="6.2,6.2,6.2,6.2,5,0">36 годин (пн.-пт. — 6 год. 12 хв., сб. — 5 год.)</option>
+                    <option class="indented-option" value="4,4,4,4,4,4,0">24 години (пн.-сб. — 4 год.)</option>
+                    <option class="indented-option" value="10,10,10,10,10,10,0">60 годин (пн.-сб. — 10 год.)</option>
+                </select>
+                </div>
+            <div class="control-group hours-group">
+                <label>
+                    Години по днях:
+                    <span class="tooltip-icon-container">
+                         <span class="tooltip-icon">?</span>
+                         <span class="tooltip-text">Введіть кількість годин для кожного дня тижня. Можна використовувати десяткові значення (наприклад, 7.5 для 7 годин 30 хвилин).</span>
+                    </span>
+                </label>
+                <div class="hours-inputs">
+                    <div class="day-input-wrapper">
+                        <span class="day-label">Пн.</span>
+                        <input type="number" value="8" min="0" max="24" step="0.1" class="day" aria-label="Понеділок">
+                    </div>
+                    <div class="day-input-wrapper">
+                        <span class="day-label">Вт.</span>
+                        <input type="number" value="8" min="0" max="24" step="0.1" class="day" aria-label="Вівторок">
+                    </div>
+                    <div class="day-input-wrapper">
+                        <span class="day-label">Ср.</span>
+                        <input type="number" value="8" min="0" max="24" step="0.1" class="day" aria-label="Середа">
+                    </div>
+                    <div class="day-input-wrapper">
+                        <span class="day-label">Чт.</span>
+                        <input type="number" value="8" min="0" max="24" step="0.1" class="day" aria-label="Четвер">
+                    </div>
+                    <div class="day-input-wrapper">
+                        <span class="day-label">Пт.</span>
+                        <input type="number" value="8" min="0" max="24" step="0.1" class="day" aria-label="П'ятниця">
+                    </div>
+                    <div class="day-input-wrapper">
+                        <span class="day-label">Сб.</span>
+                        <input type="number" value="0" min="0" max="24" step="0.1" class="day" aria-label="Субота">
+                    </div>
+                    <div class="day-input-wrapper">
+                        <span class="day-label">Нд.</span>
+                        <input type="number" value="0" min="0" max="24" step="0.1" class="day" aria-label="Неділя">
+                    </div>
+                </div>
+            </div>
+            <div class="control-group checkbox-group">
+                 <label>
+                    <input type="checkbox" id="ignoreHolidays">
+                    Не враховувати свята
+                </label>
+            </div>
+        </div>
+
+        <div id="button-container-wrapper">
+            <div id="button-wrapper" class="button-wrapper star-border-container">
+                <button id="showBtn" class="inner-content">Розрахувати</button>
+            </div>
+            <button id="downloadPdfBtn" class="pdf-button-styled" style="display: none;">Завантажити у PDF</button>
+        </div>
+
+        <div id="results-wrapper">
+            <div class="table-wrapper">
+                <table id="results">
+                    <thead id="results-head"></thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    </main>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <a href="terms.html">Умови користування</a>
+            <span class="footer-separator">|</span>
+            <a href="privacy.html">Політика конфіденційності</a>
+            <span class="footer-separator">|</span>
+            <p>Контактна інформація: <a href="mailto:pogdestiny+worktimecalculator@gmail.com" id="contact-email">pogdestiny+worktimecalculator@gmail.com</a><span id="copy-notification"></span></p>
+        </div>
+    </footer>
+</body>
+</html>
