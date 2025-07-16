@@ -196,6 +196,28 @@ function showTableLayout() {
     autoExpandColumns();
 }
 
+/**
+ * Зчитує CSS-змінні поточної теми для використання в PDF.
+ * @returns {object} Об'єкт з кольорами для PDF.
+ */
+function getThemeColorsForPdf() {
+    const computedStyles = getComputedStyle(document.documentElement);
+
+    const hexToRgb = (hex) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+        return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0, 0];
+    };
+
+    return {
+        pageColor: hexToRgb(computedStyles.getPropertyValue('--page-bg')),
+        textColor: hexToRgb(computedStyles.getPropertyValue('--pdf-text-color')),
+        headerFillColor: hexToRgb(computedStyles.getPropertyValue('--header-bg')),
+        headerTextColor: hexToRgb(computedStyles.getPropertyValue('--header-text')),
+        gridColor: hexToRgb(computedStyles.getPropertyValue('--grid-color')),
+        cellFillColor: hexToRgb(computedStyles.getPropertyValue('--pdf-cell-bg')), // Нове
+        linkColor: hexToRgb(computedStyles.getPropertyValue('--pdf-link-color'))   // Нове
+    };
+}
 
 function formatPdfHours(decimalHours) {
     const num = parseFloat(decimalHours);
@@ -264,11 +286,37 @@ async function downloadPdf() {
             console.warn("Помилка при завантаженні логотипу:", e);
         }
 
+        const applyThemeToPdf = document.getElementById('pdf-theme-checkbox').checked;
+
+        let pdfColors;
+        const defaultColors = {
+            pageColor: [255, 255, 255],
+            textColor: [0, 0, 0],
+            headerFillColor: [22, 160, 133],
+            headerTextColor: [255, 255, 255],
+            gridColor: [200, 200, 200],
+            cellFillColor: [255, 255, 255], // Нове
+            linkColor: [0, 0, 255]           // Нове
+        };
+
+        if (applyThemeToPdf) {
+            pdfColors = getThemeColorsForPdf();
+        } else {
+            pdfColors = defaultColors;
+        }
+
         const { year, selected, ignoreHolidays } = lastCalculationData;
-        const hours = JSON.parse(lastCalculationData.hours); // Розпаковуємо години
+        const hours = JSON.parse(lastCalculationData.hours);
         const data = calculateSummary(year, selected, hours, ignoreHolidays);
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
+
+        if (pdfColors.pageColor[0] !== 255 || pdfColors.pageColor[1] !== 255 || pdfColors.pageColor[2] !== 255) {
+            doc.setFillColor(...pdfColors.pageColor);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+        }
+
+        doc.setTextColor(...pdfColors.textColor);
 
         const workingDaysCount = hours.filter(h => h > 0).length;
         const totalWeeklyHours = hours.reduce((acc, h) => acc + (parseFloat(h) || 0), 0);
@@ -288,11 +336,20 @@ async function downloadPdf() {
         if (selected === "0" || selected.startsWith("Q")) {
             tableHead.push("Загалом");
         }
-        const rowConfigs = [
-            ["calendar", "Календарні дні"], ["holiday", "Святкові дні"], ["holidayRawDates", "Дати святкових днів"],
-            ["preholiday", "Передсвяткові дні"], ["preholidayDates", "Дати передсвяткових днів"], ["weekend", "Вихідні дні"],
-            ["nonWorking", "Неробочі дні"], ["working", "Робочі дні"], ["hours", "К-ть годин"]
-        ];
+
+        let rowConfigs;
+        if (ignoreHolidays) {
+            rowConfigs = [
+                ["calendar", "Календарні дні"], ["weekend", "Вихідні дні"],
+                ["nonWorking", "Неробочі дні"], ["working", "Робочі дні"], ["hours", "К-ть годин"]
+            ];
+        } else {
+            rowConfigs = [
+                ["calendar", "Календарні дні"], ["holiday", "Святкові дні"], ["holidayRawDates", "Дати святкових днів"],
+                ["preholiday", "Передсвяткові дні"], ["preholidayDates", "Дати передсвяткових днів"], ["weekend", "Вихідні дні"],
+                ["nonWorking", "Неробочі дні"], ["working", "Робочі дні"], ["hours", "К-ть годин"]
+            ];
+        }
 
         const tableBody = rowConfigs.map(([key, label]) => {
             const row = [label];
@@ -319,8 +376,7 @@ async function downloadPdf() {
                         displayVal = formatHours(numericVal);
                     } else if (key !== 'hours' && numericVal === 0) {
                         displayVal = "-";
-                    }
-                    else {
+                    } else {
                         displayVal = val;
                     }
                 }
@@ -359,9 +415,36 @@ async function downloadPdf() {
             startY: 28,
             theme: 'grid',
             margin: { left: 10, right: 10, bottom: 18 },
-            headStyles: { fillColor: [22, 160, 133], textColor: 255, font: "CustomFont", fontStyle: 'bold', halign: 'center' },
-            styles: { font: "CustomFont", fontSize: 10, cellPadding: 2, valign: 'middle', halign: 'center' },
-            columnStyles: columnStyles
+            headStyles: {
+                fillColor: pdfColors.headerFillColor,
+                textColor: pdfColors.headerTextColor,
+                lineColor: pdfColors.gridColor,
+                lineWidth: 0.1,
+                font: "CustomFont",
+                fontStyle: 'bold',
+                halign: 'center'
+            },
+            styles: {
+                font: "CustomFont",
+                fontSize: 10,
+                cellPadding: 2,
+                valign: 'middle',
+                halign: 'center',
+                textColor: pdfColors.textColor,
+                lineColor: pdfColors.gridColor,
+                fillColor: pdfColors.cellFillColor, // Ось виправлення
+                lineWidth: 0.1
+            },
+            columnStyles: columnStyles,
+            didParseCell: function (data) {
+                if (data.column.index === 0) { // Виділяємо першу колонку
+                    data.cell.styles.fillColor = [ // Робимо її трохи світлішою за фон клітинок
+                        Math.min(255, pdfColors.cellFillColor[0] + 15),
+                        Math.min(255, pdfColors.cellFillColor[1] + 15),
+                        Math.min(255, pdfColors.cellFillColor[2] + 15)
+                    ];
+                }
+            }
         });
 
         const rightMargin = 15;
@@ -375,20 +458,21 @@ async function downloadPdf() {
             doc.addImage(logoData, 'PNG', logoX, logoY, logoSize, logoSize);
         } else {
             doc.setFont("CustomFont", 'normal');
-            doc.setDrawColor(150, 150, 150);
+            doc.setDrawColor(...pdfColors.gridColor);
             doc.rect(logoX, logoY, logoSize, logoSize);
             doc.text('Лого', logoX + logoSize / 2, logoY + logoSize / 2 + 3, { align: 'center' });
         }
 
+        doc.setTextColor(...pdfColors.textColor);
         const textBlockX = logoX - padding;
         doc.setFontSize(9);
         doc.text("Створено калькулятором від RTantrumR", textBlockX, logoY + 3, { align: 'right' });
         doc.setFontSize(8);
         doc.text(`Дата: ${new Date().toLocaleDateString('uk-UA')}`, textBlockX, logoY + 7, { align: 'right' });
-        doc.setFontSize(8);
-        doc.setTextColor(0, 0, 255);
+
+        doc.setTextColor(...pdfColors.linkColor); // Ось виправлення
         doc.textWithLink('Калькулятор норми робочого часу', 15, pageHeight - 8, { url: 'https://rtantrumr.github.io/Calc_html/' });
-        doc.setTextColor(0, 0, 0);
+        doc.setTextColor(...pdfColors.textColor);
 
         doc.save(`Norma_robochogo_chasu_${year}.pdf`);
 
@@ -400,7 +484,6 @@ async function downloadPdf() {
         downloadPdfBtn.textContent = 'Завантажити у PDF';
     }
 }
-
 
 function unlockSecretTheme() {
     flyoutNavClickCount++;

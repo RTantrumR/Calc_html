@@ -16,6 +16,15 @@
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     --animation-glow-color: #FFD700;
     --row-highlight-color: #e7f5ff;
+
+    /* PDF (Світла тема - стандарт) */
+    --page-bg: #ffffff;
+    --pdf-text-color: #000000;
+    --header-bg: #16a085;
+    --header-text: #ffffff;
+    --grid-color: #cccccc;
+    --pdf-cell-bg: #ffffff; /* Фон клітинок */
+    --pdf-link-color: #0000ff; /* Класичний синій */
 }
 
 [data-theme="dark"] {
@@ -34,7 +43,16 @@
     --button-text-color: #ffffff;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     --animation-glow-color: #32CD32;
-     --row-highlight-color: #2d3748;
+    --row-highlight-color: #2d3748;
+
+    /* PDF */
+    --page-bg: #121212;
+    --pdf-text-color: #e8e6e3;
+    --header-bg: #0d6efd;
+    --header-text: #ffffff;
+    --grid-color: #444c56;
+    --pdf-cell-bg: #1e1e1e; /* Фон клітинок */
+    --pdf-link-color: #3d8bfd; /* Світліший синій */
 }
 
 [data-theme="dark-purple"] {
@@ -54,6 +72,15 @@
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     --animation-glow-color: #FFD700;
     --row-highlight-color: #382e55;
+
+    /* PDF */
+    --page-bg: #120f1a;
+    --pdf-text-color: #f4f4f4;
+    --header-bg: #6b21a8;
+    --header-text: #ffffff;
+    --grid-color: #3a3252;
+    --pdf-cell-bg: #1f1a2e; /* Фон клітинок */
+    --pdf-link-color: #a78bfa; /* Світлий фіолетовий */
 }
 
 [data-theme="dark-bordeaux"] {
@@ -73,6 +100,15 @@
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     --animation-glow-color: #00FFFF;
     --row-highlight-color: #502d2d;
+
+    /* PDF */
+    --page-bg: #131313;
+    --pdf-text-color: #f5f5f5;
+    --header-bg: #991b1b;
+    --header-text: #ffffff;
+    --grid-color: #523232;
+    --pdf-cell-bg: #2b1a1a; /* Фон клітинок */
+    --pdf-link-color: #ef4444; /* Світлий червоний */
 }
 
 [data-theme="pastel-pink"] {
@@ -92,6 +128,15 @@
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     --animation-glow-color: #f06292;
     --row-highlight-color: #f5b9c6;
+
+    /* PDF */
+    --page-bg: #f9e1e8;
+    --pdf-text-color: #263238;
+    --header-bg: #ec407a;
+    --header-text: #ffffff;
+    --grid-color: #e0e0e0;
+    --pdf-cell-bg: #ffffff; /* Фон клітинок */
+    --pdf-link-color: #d81b60; /* Темніший рожевий */
 }
 
 [data-theme="dark-green"] {
@@ -111,6 +156,15 @@
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     --animation-glow-color: #81c784;
     --row-highlight-color: #335a33;
+
+    /* PDF */
+    --page-bg: #121a12;
+    --pdf-text-color: #e8f5e9;
+    --header-bg: #2e7d32;
+    --header-text: #ffffff;
+    --grid-color: #388e3c;
+    --pdf-cell-bg: #1b2b1b; /* Фон клітинок */
+    --pdf-link-color: #81c784; /* Світло-зелений */
 }
 
 /* --- Базові стилі та структура сторінки --- */
@@ -229,13 +283,20 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 10px;
     background-color: var(--surface-color);
     padding: 0.5rem 0.8rem;
     border-radius: 20px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
     transition: background-color 0.3s, border-color 0.3s, width 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.pdf-theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
 }
 
 .theme-switcher-container label {
@@ -966,6 +1027,15 @@ tr.row-highlighted td {
     --shadow: 0 0 20px rgba(0, 255, 255, 0.5);
     --animation-glow-color: #ff00ff;
     --row-highlight-color: rgba(255, 0, 255, 0.3);
+
+    /* PDF */
+    --page-bg: #000000;
+    --pdf-text-color: #ffffff;
+    --header-bg: #ff00ff;
+    --header-text: #000000;
+    --grid-color: #00ffff;
+    --pdf-cell-bg: #111111; /* Фон клітинок */
+    --pdf-link-color: #00ffff; /* Бірюзовий */
 }
 
 [data-theme="psychedelic-rainbow"] body {
