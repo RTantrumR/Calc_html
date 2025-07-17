@@ -1,10 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Документи - Калькулятор норми робочого часу</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles-drawings.css">
+    <script src="main.js" type="module"></script>
 </head>
 <body>
+    <div id="nyan-cat-container" style="display: none;"></div>
 
+    <main class="main-content">
+        <div class="theme-switcher-container">
+            <label>Тема:</label>
+            <div class="theme-select-wrapper">
+                <div id="theme-button" class="theme-button" tabindex="0">
+                    <span class="theme-text"></span>
+                </div>
+                <div id="theme-dropdown" class="theme-dropdown">
+                    <div class="theme-option" data-value="light">Світла</div>
+                    <div class="theme-option" data-value="pastel-pink">Світла (рожева)</div>
+                    <div class="theme-option" data-value="dark">Темна</div>
+                    <div class="theme-option" data-value="dark-purple">Темна (фіолетова)</div>
+                    <div class="theme-option" data-value="dark-bordeaux">Темна (червона)</div>
+                    <div class="theme-option" data-value="dark-green">Темна (зелена)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flyout-nav-trigger-zone">
+            <div class="flyout-nav">
+                <div class="flyout-nav-content">
+                    <a href="index.html" class="nav-option">Головна</a>
+                    <a href="calculator.html" class="nav-option">Калькулятор</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="title-container">
+                <h1>Документи</h1>
+            </div>
+
+            <div class="docs-controls">
+                <label for="year-select">Рік:</label>
+                <select id="year-select">
+                    <option value="all">Всі роки</option>
+                    </select>
+            </div>
+
+            <div id="docs-container">
+
+                <section class="docs-year-section" data-year="2025">
+                    <h2>2025</h2>
+                    <div class="docs-grid">
+                        <a href="#" target="_blank" class="doc-card">
+                            <h3>Про індексацію грошових доходів населення (станом на 2025)</h3>
+                            <p>Оновлений закон, що регулює питання індексації заробітної плати, пенсій, стипендій та інших грошових доходів громадян.</p>
+                        </a>
+                        <a href="#" target="_blank" class="doc-card">
+                            <h3>Про Державний бюджет України на 2025 рік</h3>
+                            <p>Документ встановлює розмір мінімальної заробітної плати та прожиткового мінімуму на поточний рік, що є основою для багатьох розрахунків.</p>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="docs-year-section" data-year="2024">
+                    <h2>2024</h2>
+                    <div class="docs-grid">
+                        <a href="#" target="_blank" class="doc-card">
+                             <h3>Про оплату праці (Закон України)</h3>
+                             <p>Визначає економічні, правові та організаційні засади оплати праці працівників, які перебувають у трудових відносинах.</p>
+                        </a>
+                        <a href="#" target="_blank" class="doc-card">
+                             <h3>Про організацію трудових відносин в умовах воєнного стану</h3>
+                             <p>Встановлює особливості трудових відносин працівників усіх підприємств, установ, організацій в Україні незалежно від форми власності.</p>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="docs-year-section" data-year="2023">
+                    <h2>2023</h2>
+                    <div class="docs-grid">
+                        <a href="#" target="_blank" class="doc-card">
+                            <h3>Податковий кодекс України (станом на 2023 рік)</h3>
+                            <p>Регулює відносини, що виникають у сфері справляння податків і зборів, зокрема, податку на доходи фізичних осіб (ПДФО).</p>
+                        </a>
+                        <a href="#" target="_blank" class="doc-card">
+                            <h3>Про колективні договори і угоди</h3>
+                            <p>Встановлює правові засади розробки, укладення та виконання колективних договорів і угод з метою сприяння регулюванню трудових відносин.</p>
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <a href="terms.html">Умови користування</a>
+            <span class="footer-separator">|</span>
+            <a href="privacy.html">Політика конфіденційності</a>
+            <span class="footer-separator">|</span>
+            <p>Контактна інформація: <a href="mailto:pogdestiny+worktimecalculator@gmail.com" id="contact-email">pogdestiny+worktimecalculator@gmail.com</a><span id="copy-notification"></span></p>
+        </div>
+    </footer>
 </body>
 </html>

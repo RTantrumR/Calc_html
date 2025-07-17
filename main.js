@@ -501,6 +501,75 @@ function unlockSecretTheme() {
     }
 }
 
+async function loadDocuments() {
+    const yearSelect = document.getElementById('year-select');
+    const docsGrid = document.getElementById('docs-grid');
+
+    if (!yearSelect || !docsGrid) return;
+
+    try {
+        const response = await fetch('documents.json');
+        const docsByYear = await response.json();
+        const currentYear = new Date().getFullYear();
+
+        // Заповнення випадаючого списку роками
+        for (let year = currentYear; year >= 2020; year--) {
+            if (docsByYear[year]) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+        }
+
+        // Функція для відображення документів
+        const renderDocs = (selectedYear) => {
+            docsGrid.innerHTML = '';
+            const yearsToRender = (selectedYear === 'all') ? Object.keys(docsByYear).sort((a, b) => b - a) : [selectedYear];
+
+            yearsToRender.forEach(year => {
+                if (docsByYear[year]) {
+                     // Додаємо заголовок року
+                    const yearTitle = document.createElement('h2');
+                    yearTitle.className = 'docs-year-title';
+                    yearTitle.textContent = year;
+                    docsGrid.appendChild(yearTitle);
+
+                    // Створюємо контейнер для блоків цього року
+                    const yearContainer = document.createElement('div');
+                    yearContainer.className = 'docs-year-container';
+
+                    docsByYear[year].forEach(doc => {
+                        const docLink = document.createElement('a');
+                        docLink.href = doc.link;
+                        docLink.target = '_blank';
+                        docLink.className = 'doc-block';
+
+                        const docTitle = document.createElement('h3');
+                        docTitle.textContent = doc.title;
+
+                        const docDesc = document.createElement('p');
+                        docDesc.textContent = doc.description;
+
+                        docLink.appendChild(docTitle);
+                        docLink.appendChild(docDesc);
+                        yearContainer.appendChild(docLink);
+                    });
+                    docsGrid.appendChild(yearContainer);
+                }
+            });
+        };
+
+        // Початкове відображення та обробник подій
+        renderDocs('all');
+        yearSelect.addEventListener('change', () => renderDocs(yearSelect.value));
+
+    } catch (error) {
+        console.error('Помилка завантаження документів:', error);
+        docsGrid.innerHTML = '<p>Не вдалося завантажити список документів.</p>';
+    }
+}
+
 function themeSwitcher() {
     const themeContainer = document.querySelector('.theme-switcher-container');
     const themeButton = document.getElementById('theme-button');
@@ -677,6 +746,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (flyoutNav) {
         flyoutNav.addEventListener('click', unlockSecretTheme);
     }
+
+    loadDocuments();
 
     const showBtn = document.getElementById("showBtn");
     if (showBtn) {
