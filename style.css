@@ -1571,3 +1571,119 @@ tr.row-highlighted td {
 .feature-block.animate-from-bottom {
     animation: slide-in-from-bottom 1.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
+
+/* --- Стилі для вітрини "Бізнес-довідник" --- */
+.business-preview {
+    width: 100%;
+    height: 100%;
+    background-color: var(--surface-highlight-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.2em;
+    box-sizing: border-box;
+    display: flex;
+    gap: 1.2em;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.preview-docs {
+    position: relative;
+    width: 40%;
+    height: 70%;
+}
+
+.preview-docs .doc {
+    position: absolute;
+    width: 80%;
+    height: 90%;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    /* Додані властивості для розміщення ліній */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.6em;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.preview-docs .doc-1 {
+    transform: rotate(-10deg) translate(5%, 5%);
+    z-index: 1;
+}
+
+.preview-docs .doc-2 {
+    transform: rotate(5deg);
+    z-index: 2;
+    background-color: var(--surface-hover-color);
+}
+
+.preview-docs .doc-3 {
+    transform: rotate(12deg) translate(-5%, -5%);
+    z-index: 3;
+    border-color: var(--primary-color);
+}
+
+.preview-stats {
+    width: 50%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stat-bar-group {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 60%;
+    border-bottom: 2px solid var(--text-muted-color);
+    padding: 0 5px;
+}
+
+.stat-bar-group .bar {
+    width: 15%;
+    background-color: var(--text-muted-color);
+    border-radius: 2px 2px 0 0;
+}
+
+.bar-1 { height: 40%; }
+.bar-2 { height: 75%; background-color: var(--primary-color); }
+.bar-3 { height: 55%; }
+.bar-4 { height: 30%; }
+
+.kpi-group {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 0.5em;
+}
+
+.kpi {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.3em 0.6em;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--text-color);
+}
+.kpi-main {
+    color: var(--button-text-color);
+    background-color: var(--primary-color);
+    border-color: var(--primary-hover);
+}
+
+.preview-docs .doc .line {
+    height: 0.5em;
+    background-color: var(--text-muted-color);
+    opacity: 0.5;
+    border-radius: 2px;
+}
+
+.line.line-long { width: 85%; }
+.line.line-medium { width: 70%; }
+.line.line-short { width: 50%; }
