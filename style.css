@@ -1263,3 +1263,310 @@ tr.row-highlighted td {
         display: none;
     }
 }
+
+.hero-section {
+    text-align: center;
+    padding: 1rem 1rem 0.5rem 1rem;
+    margin: 0 auto;
+}
+
+.hero-section h1 {
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.hero-section p {
+    font-size: 1.1rem;
+    color: var(--text-muted-color);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    width: calc(100% - 17rem);
+    padding: 0;
+    box-sizing: border-box;
+    margin: 1.5rem auto -1.3rem;
+}
+
+.feature-block {
+    position: relative;
+    background-color: var(--surface-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text-color);
+    /* Висота блоків */
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-block:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.feature-preview {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5%;
+    box-sizing: border-box;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    background-size: cover;
+    background-position: center;
+}
+
+.feature-block:hover .feature-preview {
+    opacity: 0.15;
+    transform: scale(1.1);
+}
+
+.feature-description {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 100%);
+    color: #fff;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-align: left;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.feature-block:hover .feature-description {
+    opacity: 1;
+}
+
+.feature-description h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+}
+
+.feature-description p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.feature-block.placeholder .feature-preview {
+    background-color: var(--surface-highlight-color);
+    border: 2px dashed var(--border-color);
+}
+
+/* Оновлені стилі для HTML-вітрини калькулятора */
+.html-calc-preview {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    padding: 1.2em;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: clamp(10px, 1.8vw, 15px);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+.html-calc-preview .preview-title {
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 0.8em;
+    margin-bottom: 0.8em;
+    font-size: 1.2em;
+    color: var(--text-color);
+    flex-shrink: 0;
+}
+
+.html-calc-preview .preview-controls {
+    display: grid; /* Змінено на grid для точного вирівнювання */
+    grid-template-columns: 1fr auto 1fr; /* Ліво, центр, право */
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 1em;
+}
+
+.preview-control-left {
+    text-align: center;
+}
+
+.preview-control-center {
+    text-align: center;
+}
+.preview-control-right {
+    text-align: center;
+}
+
+.html-calc-preview .preview-controls div {
+    background-color: var(--surface-highlight-color);
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.html-calc-preview .preview-controls button {
+    background-color: var(--primary-color);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 4px;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    cursor: default; /* Щоб не було ефекту клікабельності */
+    justify-self: end; /* Прив'язка до правого краю */
+}
+
+.html-calc-preview .preview-controls span {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.html-calc-preview .preview-table {
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.html-calc-preview .preview-table-row {
+    display: grid;
+    grid-template-columns: 31% 17.25% 17.25% 17.25% 17.25%;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.html-calc-preview .preview-table-row:last-child {
+    border-bottom: none;
+}
+
+.html-calc-preview .preview-table-row.header {
+    background-color: var(--surface-hover-color);
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 1.1em;
+}
+
+.html-calc-preview .preview-table-row span {
+    padding: 0.7em 0.5em;
+    border-right: 1px solid var(--border-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.html-calc-preview .preview-table-row span:last-child {
+    border-right: none;
+}
+.html-calc-preview .preview-table-row span:first-child {
+    text-align: center;
+    padding-left: 0.8em;
+    background-color: var(--surface-highlight-color);
+}
+
+/* Адаптивність для сітки */
+@media (max-width: 1200px) {
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 95%;
+        padding: 0 1.5rem;
+    }
+}
+@media (max-width: 768px) {
+    .features-grid {
+        grid-template-columns: 1fr;
+        width: calc(100% - 1rem);
+        padding: 0 1rem;
+    }
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+}
+
+/* --- Анімація появи блоків --- */
+.features-grid.is-animating .feature-block {
+    pointer-events: none; /* Вимикаємо взаємодію під час анімації */
+}
+
+.feature-block.animate-on-load {
+    opacity: 0;
+    transition: opacity 2s ease-out; /* Плавна поява */
+}
+
+/* Анімація зліва */
+@keyframes slide-in-from-left {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+.feature-block.animate-from-left {
+    animation: slide-in-from-left 1.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Анімація справа */
+@keyframes slide-in-from-right {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+.feature-block.animate-from-right {
+    animation: slide-in-from-right 1.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Анімація зверху */
+@keyframes slide-in-from-top {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.feature-block.animate-from-top {
+    animation: slide-in-from-top 1.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Анімація знизу */
+@keyframes slide-in-from-bottom {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.feature-block.animate-from-bottom {
+    animation: slide-in-from-bottom 1.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}

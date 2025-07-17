@@ -588,20 +588,65 @@ function themeSwitcher() {
 
 window.addEventListener("DOMContentLoaded", async () => {
 
-    const rulesModal = document.getElementById('rules-modal');
-    if (rulesModal) {
+    const featuresGrid = document.querySelector('.features-grid');
+    if (featuresGrid) {
+        const rulesModal = document.getElementById('rules-modal');
+        const featureBlocks = document.querySelectorAll('.feature-block');
         const agreeButton = document.getElementById('agree-button');
+
+        const runEntryAnimation = () => {
+            featureBlocks.forEach(block => { block.style.opacity = '0'; });
+            featuresGrid.classList.add('is-animating');
+
+            const animationMap = {
+                1: 'animate-from-left', 2: 'animate-from-top', 3: 'animate-from-right',
+                4: 'animate-from-left', 5: 'animate-from-bottom', 6: 'animate-from-right'
+            };
+
+            featureBlocks.forEach((block, index) => {
+                const blockNumber = index + 1;
+                if (animationMap[blockNumber]) {
+                    setTimeout(() => { block.classList.add(animationMap[blockNumber]); }, 100);
+                }
+            });
+
+            setTimeout(() => { featuresGrid.classList.remove('is-animating'); }, 2500);
+        };
+
         const hasAgreed = localStorage.getItem('rulesAgreed');
 
-        if (!hasAgreed) {
-            rulesModal.classList.add('visible');
+        if (hasAgreed === 'true') {
+            if (rulesModal) rulesModal.classList.remove('visible');
+            runEntryAnimation();
+        } else {
+            if (rulesModal) rulesModal.classList.add('visible');
         }
 
         if (agreeButton) {
             agreeButton.addEventListener('click', () => {
                 localStorage.setItem('rulesAgreed', 'true');
-                rulesModal.classList.remove('visible');
+                if (rulesModal) rulesModal.classList.remove('visible');
+                // Невелика затримка перед запуском анімації
+                setTimeout(runEntryAnimation, 100);
             });
+        }
+    } else {
+         // Якщо сітки немає, просто обробляємо модальне вікно (для інших сторінок)
+        const rulesModal = document.getElementById('rules-modal');
+        if (rulesModal) {
+            const agreeButton = document.getElementById('agree-button');
+            const hasAgreed = localStorage.getItem('rulesAgreed');
+
+            if (!hasAgreed) {
+                rulesModal.classList.add('visible');
+            }
+
+            if (agreeButton) {
+                agreeButton.addEventListener('click', () => {
+                    localStorage.setItem('rulesAgreed', 'true');
+                    rulesModal.classList.remove('visible');
+                });
+            }
         }
     }
 
