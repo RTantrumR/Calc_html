@@ -1301,6 +1301,7 @@ tr.row-highlighted td {
     overflow: hidden;
     text-decoration: none;
     color: var(--text-color);
+    opacity: 0;
     /* Висота блоків */
     aspect-ratio: 16 / 9;
     display: flex;
