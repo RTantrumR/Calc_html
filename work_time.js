@@ -2,7 +2,7 @@
 let holidaysData = {};
 
 export async function loadHolidays() {
-    const res = await fetch("holidays.json");
+    const res = await fetch("./data/holidays.json");
     holidaysData = await res.json();
 }
 

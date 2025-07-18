@@ -1,6 +1,6 @@
 import { loadHolidays, calculateSummary } from './work_time.js';
 import { FONT_BASE_64 } from './data/font-data.js';
-import { auth, incrementCounter } from './firebase-config.js';
+import { auth, incrementCounter } from './data/firebase-config.js';
 
 let lastCalculationData = null;
 let flyoutNavClickCount = 0;
@@ -510,49 +510,60 @@ async function loadDocuments() {
     try {
         const response = await fetch('documents.json');
         const docsByYear = await response.json();
-        const currentYear = new Date().getFullYear();
 
-        // Заповнення випадаючого списку роками
-        for (let year = currentYear; year >= 2020; year--) {
-            if (docsByYear[year]) {
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                yearSelect.appendChild(option);
-            }
-        }
+        const availableYears = Object.keys(docsByYear).sort((a, b) => b - a);
+        availableYears.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        });
 
-        // Функція для відображення документів
         const renderDocs = (selectedYear) => {
             docsGrid.innerHTML = '';
-            const yearsToRender = (selectedYear === 'all') ? Object.keys(docsByYear).sort((a, b) => b - a) : [selectedYear];
+            const yearsToRender = (selectedYear === 'all') ? availableYears : [selectedYear];
 
             yearsToRender.forEach(year => {
                 if (docsByYear[year]) {
-                     // Додаємо заголовок року
                     const yearTitle = document.createElement('h2');
                     yearTitle.className = 'docs-year-title';
                     yearTitle.textContent = year;
                     docsGrid.appendChild(yearTitle);
 
-                    // Створюємо контейнер для блоків цього року
                     const yearContainer = document.createElement('div');
-                    yearContainer.className = 'docs-year-container';
+                    yearContainer.className = 'features-grid docs-page-grid';
 
                     docsByYear[year].forEach(doc => {
                         const docLink = document.createElement('a');
                         docLink.href = doc.link;
                         docLink.target = '_blank';
-                        docLink.className = 'doc-block';
+                        docLink.className = 'feature-block';
+
+                        const featurePreview = document.createElement('div');
+                        featurePreview.className = 'feature-preview';
+                        featurePreview.innerHTML = `
+                            <div class="business-preview">
+                                <div class="preview-docs">
+                                    <div class="doc doc-2">
+                                        <div class="line line-short"></div><div class="line line-long"></div><div class="line line-long"></div><div class="line line-medium"></div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                        const featureDesc = document.createElement('div');
+                        featureDesc.className = 'feature-description';
 
                         const docTitle = document.createElement('h3');
                         docTitle.textContent = doc.title;
 
-                        const docDesc = document.createElement('p');
-                        docDesc.textContent = doc.description;
+                        const docP = document.createElement('p');
+                        docP.textContent = doc.description;
 
-                        docLink.appendChild(docTitle);
-                        docLink.appendChild(docDesc);
+                        featureDesc.appendChild(docTitle);
+                        featureDesc.appendChild(docP);
+
+                        docLink.appendChild(featurePreview);
+                        docLink.appendChild(featureDesc);
                         yearContainer.appendChild(docLink);
                     });
                     docsGrid.appendChild(yearContainer);
@@ -560,7 +571,6 @@ async function loadDocuments() {
             });
         };
 
-        // Початкове відображення та обробник подій
         renderDocs('all');
         yearSelect.addEventListener('change', () => renderDocs(yearSelect.value));
 
