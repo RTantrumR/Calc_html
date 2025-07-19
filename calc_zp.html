@@ -1,10 +1,295 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Калькулятор зарплати - Калькулятор норми робочого часу</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles-drawings.css">
+    <script src="main.js" type="module"></script>
+    <style>
+        .calculator-container {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            text-align: right;
+            background-color: var(--surface-highlight-color);
+            color: var(--text-color);
+        }
+        .results-group {
+            margin-top: 2rem;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-item .label-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .result-item .label {
+            color: var(--text-muted-color);
+        }
+        .result-item .value {
+            font-weight: bold;
+        }
+        .total-cost .value {
+            color: var(--primary-color);
+            font-size: 1.2em;
+        }
+        /* --- Tooltip Styles --- */
+        .tooltip-icon-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .tooltip-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            background-color: var(--text-muted-color);
+            color: var(--surface-color);
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: help;
+            user-select: none;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 280px;
+            background-color: var(--surface-hover-color);
+            color: var(--text-color);
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.4s, visibility 0.4s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            line-height: 1.4;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+        .tooltip-icon-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transition-delay: 0.2s;
+        }
+        .tooltip-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .tooltip-text a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
 </head>
 <body>
+<main class="main-content">
+    <div class="theme-switcher-container">
+        <label>Тема:</label>
+        <div class="theme-select-wrapper">
+            <div id="theme-button" class="theme-button" tabindex="0">
+                <span class="theme-text"></span>
+            </div>
+            <div id="theme-dropdown" class="theme-dropdown">
+                    <div class="theme-option" data-value="light">Світла</div>
+                    <div class="theme-option" data-value="pastel-pink">Світла (рожева)</div>
+                    <div class="theme-option" data-value="dark">Темна</div>
+                    <div class="theme-option" data-value="dark-purple">Темна (фіолетова)</div>
+                    <div class="theme-option" data-value="dark-bordeaux">Темна (червона)</div>
+                    <div class="theme-option" data-value="dark-green">Темна (зелена)</div>
+            </div>
+        </div>
+    </div>
 
+     <div id="flyout-system" class="flyout-system">
+        <div id="flyout-nav" class="flyout-nav">
+            <div class="flyout-nav-content">
+                <a href="index.html" class="nav-option">Головна</a>
+                <a href="calculator.html" class="nav-option">Калькулятор</a>
+            </div>
+        </div>
+            <div id="flyout-toggle-btn" class="flyout-toggle-btn">
+                <span class="arrow"></span>
+            </div>
+
+     </div>
+
+    <div class="container">
+        <div class="title-container">
+            <h1>Калькулятор зарплати</h1>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-group">
+                <label for="net-salary">Зарплата "на руки", грн</label>
+                <input type="number" id="net-salary" placeholder="Введіть суму..." oninput="calculateSalary()">
+            </div>
+            <div class="results-group">
+                <div class="result-item">
+                    <div class="label-group">
+                        <span class="tooltip-icon-container">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">
+                                <strong>Податок на доходи фізичних осіб (ПДФО)</strong> — це основний податок, що утримується із зарплати працівника. Ставка становить 18% від нарахованої суми.<br>
+                                <em>Регулюється: <a href="https://zakon.rada.gov.ua/laws/show/2755-17#n3851:~:text=167.1.%20%D0%A1%D1%82%D0%B0%D0%B2%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%B4%D0%B0%D1%82%D0%BA%D1%83,%D1%86%D0%B8%D0%B2%D1%96%D0%BB%D1%8C%D0%BD%D0%BE%2D%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D0%B2%D0%B8%D0%BC%D0%B8%20%D0%B4%D0%BE%D0%B3%D0%BE%D0%B2%D0%BE%D1%80%D0%B0%D0%BC%D0%B8." target="_blank">ст. 167.1 Податкового кодексу України</a>.</em>
+                            </span>
+                        </span>
+                        <span class="label">Податок на доходи (ПДФО - 18%)</span>
+                    </div>
+                    <span class="value" id="pit-result">0.00 грн</span>
+                </div>
+                <div class="result-item">
+                     <div class="label-group">
+                        <span class="tooltip-icon-container">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">
+                                <strong>Військовий збір (ВЗ)</strong> — тимчасовий податок на підтримку армії. Ставка у 2025 році становить 5% від нарахованої зарплати.<br>
+                                <em>Регулюється: <a href="https://zakon.rada.gov.ua/laws/show/2755-17#n11110:~:text=1.3.%20%D0%A1%D1%82%D0%B0%D0%B2%D0%BA%D0%B0%20%D0%B7%D0%B1%D0%BE%D1%80%D1%83,4%20%D1%86%D1%8C%D0%BE%D0%B3%D0%BE%20%D0%BF%D1%96%D0%B4%D0%BF%D1%83%D0%BD%D0%BA%D1%82%D1%83%3B" target="_blank">п. 16-1 підрозд. 10 розд. XX ПКУ</a>.</em>
+                            </span>
+                        </span>
+                        <span class="label">Військовий збір (5%)</span>
+                    </div>
+                    <span class="value" id="military-tax-result">0.00 грн</span>
+                </div>
+                <div class="result-item">
+                    <div class="label-group">
+                        <span class="tooltip-icon-container">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">
+                                <strong>Нарахована зарплата ("брудна" або "гросс")</strong> — це повна сума зарплати до вирахування ПДФО та Військового збору. Саме з цієї суми розраховуються всі податки та внески.
+                            </span>
+                        </span>
+                        <span class="label"><strong>Нарахована зарплата ("брудна")</strong></span>
+                    </div>
+                    <span class="value" id="gross-salary-result">0.00 грн</span>
+                </div>
+                <div class="result-item">
+                    <div class="label-group">
+                        <span class="tooltip-icon-container">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">
+                                <strong>Єдиний соціальний внесок (ЄСВ)</strong> — це внесок на загальнообов'язкове державне соціальне страхування. Роботодавець нараховує його "зверху" на "брудну" зарплату та сплачує за власний кошт. Ставка — 22%.<br>
+                                <em>Регулюється: <a href="https://zakon.rada.gov.ua/laws/show/2464-17#Text:~:text=5.%20%D0%84%D0%B4%D0%B8%D0%BD%D0%B8%D0%B9%20%D0%B2%D0%BD%D0%B5%D1%81%D0%BE%D0%BA%20%D0%B4%D0%BB%D1%8F%20%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%B8%D0%BA%D1%96%D0%B2%2C%20%D0%B7%D0%B0%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%85%20%D1%83%20%D1%81%D1%82%D0%B0%D1%82%D1%82%D1%96%204%20%D1%86%D1%8C%D0%BE%D0%B3%D0%BE%20%D0%97%D0%B0%D0%BA%D0%BE%D0%BD%D1%83%2C%20%D0%B2%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BB%D1%8E%D1%94%D1%82%D1%8C%D1%81%D1%8F%20%D1%83%20%D1%80%D0%BE%D0%B7%D0%BC%D1%96%D1%80%D1%96%2022%20%D0%B2%D1%96%D0%B4%D1%81%D0%BE%D1%82%D0%BA%D0%B8%20%D0%B4%D0%BE%20%D0%B2%D0%B8%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%BE%D1%97%20%D1%81%D1%82%D0%B0%D1%82%D1%82%D0%B5%D1%8E%207%20%D1%86%D1%8C%D0%BE%D0%B3%D0%BE%20%D0%97%D0%B0%D0%BA%D0%BE%D0%BD%D1%83%20%D0%B1%D0%B0%D0%B7%D0%B8%20%D0%BD%D0%B0%D1%80%D0%B0%D1%85%D1%83%D0%B2%D0%B0%D0%BD%D0%BD%D1%8F%20%D1%94%D0%B4%D0%B8%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%B2%D0%BD%D0%B5%D1%81%D0%BA%D1%83." target="_blank">Закон України "Про збір та облік ЄСВ"</a>.</em>
+                            </span>
+                        </span>
+                        <span class="label">Єдиний соціальний внесок (ЄСВ - 22%)</span>
+                    </div>
+                    <span class="value" id="usc-result">0.00 грн</span>
+                </div>
+                <div class="result-item total-cost">
+                    <div class="label-group">
+                        <span class="tooltip-icon-container">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">
+                                <strong>Повні витрати роботодавця</strong> — це фінальна сума, яку компанія витрачає на одного працівника. Складається з нарахованої зарплати ("брудної") та суми ЄСВ.
+                            </span>
+                        </span>
+                        <span class="label"><strong>Повні витрати роботодавця</strong></span>
+                    </div>
+                    <span class="value" id="total-cost-result">0.00 грн</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </main>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <a href="terms.html">Умови користування</a>
+            <span class="footer-separator">|</span>
+            <a href="privacy.html">Політика конфіденційності</a>
+            <span class="footer-separator">|</span>
+            <p>Контактна інформація: <a href="mailto:pogdestiny+worktimecalculator@gmail.com" id="contact-email">pogdestiny+worktimecalculator@gmail.com</a><span id="copy-notification"></span></p>
+        </div>
+    </footer>
+
+    <script>
+    function calculateSalary() {
+        const netSalaryInput = document.getElementById('net-salary');
+        const netSalary = parseFloat(netSalaryInput.value) || 0;
+
+        // Ставки податків на 2025 рік
+        const PIT_RATE = 0.18; // ПДФО
+        const MILITARY_RATE = 0.05; // Військовий збір
+        const USC_RATE = 0.22; // ЄСВ
+
+        // Розрахунок
+        const grossSalary = netSalary / (1 - PIT_RATE - MILITARY_RATE);
+        const pitAmount = grossSalary * PIT_RATE;
+        const militaryTaxAmount = grossSalary * MILITARY_RATE;
+        const uscAmount = grossSalary * USC_RATE;
+        const totalCost = grossSalary + uscAmount;
+
+        // Відображення результатів
+        document.getElementById('pit-result').textContent = pitAmount.toFixed(2) + ' грн';
+        document.getElementById('military-tax-result').textContent = militaryTaxAmount.toFixed(2) + ' грн';
+        document.getElementById('gross-salary-result').textContent = grossSalary.toFixed(2) + ' грн';
+        document.getElementById('usc-result').textContent = uscAmount.toFixed(2) + ' грн';
+        document.getElementById('total-cost-result').textContent = totalCost.toFixed(2) + ' грн';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        let tooltipTimeout;
+
+        document.querySelectorAll('.tooltip-icon-container').forEach(container => {
+            const tooltipText = container.querySelector('.tooltip-text');
+
+            const showTooltip = () => {
+                clearTimeout(tooltipTimeout);
+                tooltipText.classList.add('visible');
+            };
+
+            const hideTooltip = () => {
+                tooltipTimeout = setTimeout(() => {
+                    tooltipText.classList.remove('visible');
+                }, 300); // Затримка у мілісекундах перед зникненням
+            };
+
+            container.addEventListener('mouseenter', showTooltip);
+            container.addEventListener('mouseleave', hideTooltip);
+        });
+    });
+
+    // Початковий розрахунок при завантаженні
+    document.addEventListener('DOMContentLoaded', calculateSalary);
+    </script>
 </body>
 </html>

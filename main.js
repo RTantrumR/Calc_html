@@ -665,6 +665,54 @@ function themeSwitcher() {
     setTimeout(() => themeText.classList.add('visible'), 50);
 }
 
+function setupFlyoutMenu() {
+    const system = document.getElementById('flyout-system');
+    const nav = document.getElementById('flyout-nav');
+    const toggleBtn = document.getElementById('flyout-toggle-btn');
+
+    if (!system || !nav || !toggleBtn) {
+        return;
+    }
+
+    const closeMenu = (e) => {
+        if (!system.contains(e.target)) {
+            system.classList.remove('is-open');
+            // Плавно повертаємо кнопку на місце
+            toggleBtn.style.transform = 'translateY(0)';
+            document.removeEventListener('click', closeMenu);
+        }
+    };
+
+    toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = system.classList.contains('is-open');
+
+        if (isOpen) {
+            system.classList.remove('is-open');
+            // Плавно повертаємо кнопку на місце
+            toggleBtn.style.transform = 'translateY(0)';
+            document.removeEventListener('click', closeMenu);
+        } else {
+            system.classList.add('is-open');
+
+            // --- Розрахунок для плавної анімації ---
+            const navHeight = nav.offsetHeight; // Висота меню
+            const gap = 5; // Відстань між меню та кнопкою (зменшив для краси)
+            const navTopPosition = 10; // Позиція меню від верху (має збігатися з `translateY(10px)` в CSS)
+
+            // Рахуємо, на скільки зсунути кнопку вниз
+            const totalOffset = navTopPosition + navHeight + gap;
+
+            // Застосовуємо transform для плавного руху
+            toggleBtn.style.transform = `translateY(${totalOffset}px)`;
+
+            setTimeout(() => {
+                document.addEventListener('click', closeMenu);
+            }, 0);
+        }
+    });
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
 
     const featuresGrid = document.querySelector('.features-grid');
@@ -752,12 +800,13 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     themeSwitcher();
 
-    const flyoutNav = document.querySelector('.flyout-nav');
+    const flyoutNav = document.getElementById('flyout-nav');
     if (flyoutNav) {
         flyoutNav.addEventListener('click', unlockSecretTheme);
     }
 
     loadDocuments();
+    setupFlyoutMenu();
 
     const showBtn = document.getElementById("showBtn");
     if (showBtn) {

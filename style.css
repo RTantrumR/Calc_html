@@ -415,41 +415,74 @@ h1 {
     background-color: var(--surface-hover-color);
 }
 
-.flyout-nav-trigger-zone {
+.flyout-system {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .flyout-nav {
     position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -150%);
-    opacity: 0;
     background-color: var(--surface-color);
     padding: 0.75rem;
-    border-radius: 50px;
+    border-radius: 25px;
     box-shadow: var(--shadow);
-    transition: transform 0.6s ease-in-out 0.1s, opacity 0.7s ease-in-out, background 0.3s;
+    transform: translateY(-150%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0s 0.5s, background 0.3s;
 }
 
-.flyout-nav-trigger-zone:hover .flyout-nav {
-    transform: translate(-50%, 15px);
+.flyout-toggle-btn {
+    width: 120px;
+    height: 30px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 15px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transition: transform 0.5s ease-in-out, background-color 0.3s, border-color 0.3s;
+}
+
+.flyout-toggle-btn .arrow {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid var(--text-muted-color);
+    transition: transform 0.4s ease-in-out;
+}
+
+/* --- Стан відкритого меню --- */
+.flyout-system.is-open .flyout-nav {
+    transform: translateY(16px);
     opacity: 1;
+    visibility: visible;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0s 0s, background 0.3s;
+}
+
+.flyout-system.is-open .flyout-toggle-btn .arrow {
+    transform: rotate(180deg);
 }
 
 .flyout-nav-content {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 10px; /* Проміжок між кнопками */
 }
 
+/* ЗМІНЕНО: Кнопка меню */
 .nav-option {
-    display: block;
+    /* Властивість display: block; видалено */
     padding: 0.6rem 1.2rem;
     background-color: var(--surface-hover-color);
     border-radius: 50px;
