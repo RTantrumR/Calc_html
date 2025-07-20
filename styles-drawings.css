@@ -425,7 +425,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2%;
+    padding: 1rem;
+    box-sizing: border-box;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -440,50 +441,53 @@
     background-color: var(--surface-color);
     border-radius: 12px;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-    position: relative; /* змінено з absolute */
+    position: relative;
     display: flex;
     flex-direction: column;
     transition: all 0.5s ease-in-out;
+    transform: scale(0.95);
+    overflow: hidden; /* Додано, щоб уникнути випадіння контенту під час анімації */
 }
 
 .modal-overlay.visible .modal-window {
     transform: scale(1);
 }
 
-/* Початковий стан: тільки таблиця, велика і по центру */
+/* Стан "ДО": таблиця велика і по центру */
 #iif-table-modal {
-    width: 100%;
+    flex: 1 1 auto;
+    width: 95%;
     max-width: 1500px;
-    height: 85vh;
-    transform: scale(0.95);
+    height: 95vh;
 }
 
-/* Стан діаграми: прихований */
+/* Стан "ПІСЛЯ": діаграма за замовчуванням невидима і не займає місця */
 #iif-chart-modal {
-    width: 47%;
-    max-width: 650px;
-    height: 65vh; /* Вертикально менше */
+    flex: 0 0 0;
+    width: 0;
+    height: 50vh; /* ЗМІНЕНО: Ще більше зменшено по вертикалі */
     opacity: 0;
-    transform: scale(0.9);
+    overflow: hidden;
     pointer-events: none;
 }
 
-/* Активний стан: обидва вікна видимі */
+/* Активний стан "ПІСЛЯ": обидва вікна видимі */
 .modal-overlay.chart-view-active {
-    justify-content: space-evenly; /* Розміщує з відступами */
+    justify-content: space-between; /* Розсовує елементи по краях */
 }
 
+/* Активний стан "ПІСЛЯ": обидва вікна видимі та займають відповідний простір */
 .modal-overlay.chart-view-active #iif-table-modal {
-    width: 47%;
-    max-width: 1000px;
-    height: 90vh; /* Вертикально більше */
+    flex: 1 1 65%; /* ЗМІНЕНО: Таблиця тепер ширша */
+    width: 65%;
 }
+
 .modal-overlay.chart-view-active #iif-chart-modal {
+    flex: 1 1 33%; /* ЗМІНЕНО: Діаграма трохи вужча */
+    width: 33%;
     opacity: 1;
-    transform: scale(1);
     pointer-events: auto;
 }
-
 
 #iif-table-wrapper {
     overflow: auto;
@@ -582,7 +586,7 @@
     width: 100%;
     height: 100%;
     flex-grow: 1;
-    font-size: 18px; /* Збільшений шрифт */
+    font-size: 18px;
 }
 
 .line-chart .chart-line {
@@ -599,7 +603,7 @@
     transition: r 0.2s;
 }
 .line-chart .chart-point.positive {
-    fill: var(--primary-color);
+    fill: var(--animation-glow-color); /* ЗМІНЕНО: Використовуємо контрастний колір теми */
 }
 .line-chart .chart-point.negative {
     fill: var(--danger-color);
@@ -610,7 +614,14 @@
 
 .line-chart .baseline {
     stroke: var(--danger-color);
-    stroke-width: 1.5; /* Суцільна лінія */
+    stroke-width: 1.5;
+    opacity: 0.6; /* ЗМІНЕНО: Додано прозорість */
+}
+
+.line-chart .grid-line {
+    stroke: var(--border-color);
+    stroke-width: 1;
+    stroke-dasharray: 2, 3;
 }
 
 .line-chart .axis-line {
@@ -619,7 +630,7 @@
 }
 
 .line-chart .axis-label {
-    fill: var(--danger-color);
+    fill: var(--text-color);
     font-size: 1em;
     text-anchor: end;
 }
@@ -632,4 +643,7 @@
     fill: var(--text-muted-color);
     font-size: 1em;
     text-anchor: middle;
+}
+body.modal-open, html.modal-open {
+    overflow: hidden;
 }

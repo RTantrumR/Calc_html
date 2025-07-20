@@ -142,54 +142,62 @@
                 const months = ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру'];
 
                 chartContainer.innerHTML = '';
-
                 const chartWrapper = document.createElement('div');
                 chartWrapper.className = 'chart-wrapper';
 
                 const svgNS = "http://www.w3.org/2000/svg";
                 const svg = document.createElementNS(svgNS, "svg");
                 svg.setAttribute('class', 'line-chart');
-                svg.setAttribute('viewBox', '0 0 550 280'); // Збільшено висоту
+                svg.setAttribute('viewBox', '0 0 550 280');
                 svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
+                // --- ОНОВЛЕНО: Логіка розрахунку меж Y-осі ---
                 const validData = yearData.filter(v => v !== null);
-                const dataMax = Math.max(...validData, 101);
-                const dataMin = Math.min(...validData, 99);
+                const dataMax = Math.max(...validData);
+                const dataMin = Math.min(...validData);
+                const verticalPadding = Math.max(5, (dataMax - dataMin) * 0.2);
 
-                const verticalPadding = Math.max(7, (dataMax - dataMin) * 0.5);
-                const viewMax = dataMax + verticalPadding;
-                const viewMin = dataMin - verticalPadding;
+                const viewMax = Math.max(120, dataMax + verticalPadding);
+                const viewMin = Math.min(90, dataMin - verticalPadding);
                 const range = viewMax - viewMin;
 
                 const y = (val) => 240 - ((val - viewMin) / range * 210);
                 const xStep = 480 / 12;
                 const x = (index) => 40 + (index * xStep) + (xStep / 2);
 
+                // --- ОНОВЛЕНО: Вертикальна лінія осі ---
                 const yAxis = document.createElementNS(svgNS, 'line');
                 yAxis.setAttribute('class', 'axis-line');
-                yAxis.setAttribute('x1', 40);
-                yAxis.setAttribute('y1', 20);
-                yAxis.setAttribute('x2', 40);
-                yAxis.setAttribute('y2', 215); // Обрізано
+                yAxis.setAttribute('x1', '40');
+                yAxis.setAttribute('y1', y(viewMax) > 10 ? y(viewMax) - 10 : 10);
+                yAxis.setAttribute('x2', '40');
+                yAxis.setAttribute('y2', y(viewMin) < 230 ? y(viewMin) + 10 : 230);
                 svg.appendChild(yAxis);
 
-                if (100 >= viewMin && 100 <= viewMax) {
-                    const baselineY = y(100);
-                    const baseline = document.createElementNS(svgNS, 'line');
-                    baseline.setAttribute('class', 'baseline');
-                    baseline.setAttribute('x1', 40);
-                    baseline.setAttribute('y1', baselineY);
-                    baseline.setAttribute('x2', 520);
-                    baseline.setAttribute('y2', baselineY);
-                    svg.appendChild(baseline);
-                    const baselineLabel = document.createElementNS(svgNS, 'text');
-                    baselineLabel.setAttribute('class', 'axis-label');
-                    baselineLabel.setAttribute('x', 35);
-                    baselineLabel.setAttribute('y', baselineY + 5);
-                    baselineLabel.textContent = '100';
-                    svg.appendChild(baselineLabel);
-                }
+                // --- НОВИЙ КОД: Додавання горизонтальних ліній та позначок ---
+                const yLabels = [90, 100, 110, 120];
+                yLabels.forEach(labelValue => {
+                    if (labelValue >= viewMin && labelValue <= viewMax) {
+                        const lineY = y(labelValue);
 
+                        const gridLine = document.createElementNS(svgNS, 'line');
+                        gridLine.setAttribute('class', labelValue === 100 ? 'baseline' : 'grid-line');
+                        gridLine.setAttribute('x1', 40);
+                        gridLine.setAttribute('y1', lineY);
+                        gridLine.setAttribute('x2', 520);
+                        gridLine.setAttribute('y2', lineY);
+                        svg.appendChild(gridLine);
+
+                        const label = document.createElementNS(svgNS, 'text');
+                        label.setAttribute('class', 'axis-label');
+                        label.setAttribute('x', 35);
+                        label.setAttribute('y', lineY + 4);
+                        label.textContent = labelValue;
+                        svg.appendChild(label);
+                    }
+                });
+
+                // --- (Решта коду для створення точок та лінії графіку залишається без змін) ---
                 const points = yearData.map((val, i) => val !== null ? `${x(i)},${y(val)}` : null).filter(Boolean);
 
                 if (points.length > 1) {
@@ -226,7 +234,8 @@
                     const label = document.createElementNS(svgNS, 'text');
                     label.setAttribute('class', 'month-label');
                     label.setAttribute('x', x(i));
-                    label.setAttribute('y', 230); // Позиція біля умовного "90"
+                    label.setAttribute('y', 230);
+                    label.textContent = month;
                     svg.appendChild(label);
                 });
 
@@ -251,7 +260,7 @@
                 } else {
                     if (currentYear !== null) {
                         isTransitionLocked = true;
-                        setTimeout(() => { isTransitionLocked = false; }, 200); // Затримка 0.2с
+                        setTimeout(() => { isTransitionLocked = false; }, 200);
                     }
 
                     document.querySelector(`.year-cell[data-year="${year}"]`).classList.add('active');
@@ -266,10 +275,14 @@
                 if (!tableElement) {
                     await createIifTable();
                 }
+                document.documentElement.classList.add('modal-open');
+                document.body.classList.add('modal-open');
                 modalOverlay.classList.add('visible');
             };
 
             const closeModal = () => {
+                document.documentElement.classList.remove('modal-open');
+                document.body.classList.remove('modal-open');
                 modalOverlay.classList.remove('visible');
                 modalOverlay.classList.remove('chart-view-active');
                 currentYear = null;
