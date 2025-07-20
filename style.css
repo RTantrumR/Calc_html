@@ -482,7 +482,6 @@ h1 {
 
 /* ЗМІНЕНО: Кнопка меню */
 .nav-option {
-    /* Властивість display: block; видалено */
     padding: 0.6rem 1.2rem;
     background-color: var(--surface-hover-color);
     border-radius: 50px;
@@ -491,6 +490,7 @@ h1 {
     font-weight: 500;
     border: 1px solid transparent;
     transition: background-color 0.2s, border-color 0.2s;
+    white-space: nowrap; /* <-- Ось цей рядок все виправить */
 }
 
 .nav-option:hover {
@@ -640,8 +640,8 @@ input[type=number] {
     border-radius: 6px;
     padding: 8px;
     position: absolute;
-    z-index: 1;
-    bottom: 135%;
+    z-index: 10;
+    top: 150%;
     left: 50%;
     margin-left: -125px;
     opacity: 0;
@@ -655,6 +655,10 @@ input[type=number] {
 .tooltip-icon-container:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+.modal-overlay.chart-view-active .tooltip-icon-container {
+	display: none;
 }
 
 .main-tooltip-container {

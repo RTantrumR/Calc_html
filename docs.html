@@ -3,22 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Документи - Калькулятор норми робочого часу</title>
+    <title>Довідники</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="styles-drawings.css">
     <script src="main.js" type="module"></script>
 </head>
 <body>
     <div id="iif-modal-overlay" class="modal-overlay">
-        <div id="iif-table-modal" class="modal-window">
-            <span id="modal-close-button" class="close-button">&times;</span>
-            <h2 class="table-title">Індекс споживчих цін (індекс інфляції)</h2>
-            <div id="iif-table-wrapper">
+        <div class="modal-content-wrapper">
+            <div id="iif-table-modal" class="modal-window">
+                <span id="modal-close-button" class="close-button">&times;</span>
+                <h2 class="table-title">
+                 Індекс споживчих цін (індекс інфляції)
+                 <div class="tooltip-icon-container">
+                  <span class="tooltip-icon">?</span>
+                  <span class="tooltip-text">Спробуйте натиснути на роки у випадаючому списку!</span>
+                 </div>
+                </h2>
+                <div id="iif-table-wrapper">
                 </div>
-        </div>
-        <div id="iif-chart-modal" class="modal-window chart-window">
-             <div id="iif-chart-container">
+            </div>
+            <div class="chart-column">
+                <div id="iif-chart-modal" class="modal-window chart-window">
+                     <div id="iif-chart-container"></div>
                 </div>
+                <div id="iif-cumulative-chart-modal" class="modal-window chart-window">
+                    <div id="iif-cumulative-chart-container"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -46,7 +58,8 @@
            <div id="flyout-nav" class="flyout-nav">
                <div class="flyout-nav-content">
                     <a href="index.html" class="nav-option">Головна</a>
-                    <a href="calculator.html" class="nav-option">Калькулятор</a>
+                    <a href="calculator.html" class="nav-option">Калькулятор НРЧ</a>
+                    <a href="calc_zp.html" class="nav-option">Калькулятор ЗП</a>
                 </div>
            </div>
                 <div id="flyout-toggle-btn" class="flyout-toggle-btn">
@@ -56,7 +69,7 @@
 
         <div class="container">
             <div class="title-container">
-                <h1>Документи</h1>
+                <h1>Довідники</h1>
             </div>
 
             <div class="docs-controls">
@@ -80,237 +93,5 @@
             <p>Контактна інформація: <a href="mailto:pogdestiny+worktimecalculator@gmail.com" id="contact-email">pogdestiny+worktimecalculator@gmail.com</a><span id="copy-notification"></span></p>
         </div>
     </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const modalOverlay = document.getElementById('iif-modal-overlay');
-            const tableModal = document.getElementById('iif-table-modal');
-            const chartModal = document.getElementById('iif-chart-modal');
-            const tableWrapper = document.getElementById('iif-table-wrapper');
-            const chartContainer = document.getElementById('iif-chart-container');
-            const closeButton = document.getElementById('modal-close-button');
-
-            let iifData = null;
-            let currentYear = null;
-            let isTransitionLocked = false;
-            let tableElement = null;
-
-            const createIifTable = async () => {
-                try {
-                    const response = await fetch('iif_data.json');
-                    iifData = await response.json();
-
-                    tableElement = document.createElement('table');
-                    tableElement.className = 'iif-table';
-                    const thead = document.createElement('thead');
-                    const tbody = document.createElement('tbody');
-                    const headerRow = document.createElement('tr');
-                    const yearHeader = document.createElement('th');
-                    yearHeader.textContent = 'Рік';
-                    headerRow.appendChild(yearHeader);
-                    ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру', 'Всього'].forEach(month => {
-                        const th = document.createElement('th');
-                        th.textContent = month;
-                        headerRow.appendChild(th);
-                    });
-                    thead.appendChild(headerRow);
-                    tableElement.appendChild(thead);
-                    const sortedYears = Object.keys(iifData).sort((a, b) => b - a);
-                    sortedYears.forEach(year => {
-                        const row = document.createElement('tr');
-                        const yearCell = document.createElement('td');
-                        yearCell.textContent = year;
-                        yearCell.dataset.year = year;
-                        yearCell.classList.add('year-cell');
-                        row.appendChild(yearCell);
-                        iifData[year].forEach(value => {
-                            const cell = document.createElement('td');
-                            cell.textContent = value !== null ? value : '-';
-                            row.appendChild(cell);
-                        });
-                        tbody.appendChild(row);
-                    });
-                    tableElement.appendChild(tbody);
-                    tableWrapper.appendChild(tableElement);
-                } catch (error) {
-                    console.error('Не вдалося завантажити дані інфляції:', error);
-                    tableWrapper.innerHTML = '<p>Помилка завантаження даних.</p>';
-                }
-            };
-
-            const createChart = (year) => {
-                const yearData = iifData[year].slice(0, 12);
-                const months = ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру'];
-
-                chartContainer.innerHTML = '';
-                const chartWrapper = document.createElement('div');
-                chartWrapper.className = 'chart-wrapper';
-
-                const svgNS = "http://www.w3.org/2000/svg";
-                const svg = document.createElementNS(svgNS, "svg");
-                svg.setAttribute('class', 'line-chart');
-                svg.setAttribute('viewBox', '0 0 550 280');
-                svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-
-                // --- ОНОВЛЕНО: Логіка розрахунку меж Y-осі ---
-                const validData = yearData.filter(v => v !== null);
-                const dataMax = Math.max(...validData);
-                const dataMin = Math.min(...validData);
-                const verticalPadding = Math.max(5, (dataMax - dataMin) * 0.2);
-
-                const viewMax = Math.max(120, dataMax + verticalPadding);
-                const viewMin = Math.min(90, dataMin - verticalPadding);
-                const range = viewMax - viewMin;
-
-                const y = (val) => 240 - ((val - viewMin) / range * 210);
-                const xStep = 480 / 12;
-                const x = (index) => 40 + (index * xStep) + (xStep / 2);
-
-                // --- ОНОВЛЕНО: Вертикальна лінія осі ---
-                const yAxis = document.createElementNS(svgNS, 'line');
-                yAxis.setAttribute('class', 'axis-line');
-                yAxis.setAttribute('x1', '40');
-                yAxis.setAttribute('y1', y(viewMax) > 10 ? y(viewMax) - 10 : 10);
-                yAxis.setAttribute('x2', '40');
-                yAxis.setAttribute('y2', y(viewMin) < 230 ? y(viewMin) + 10 : 230);
-                svg.appendChild(yAxis);
-
-                // --- НОВИЙ КОД: Додавання горизонтальних ліній та позначок ---
-                const yLabels = [90, 100, 110, 120];
-                yLabels.forEach(labelValue => {
-                    if (labelValue >= viewMin && labelValue <= viewMax) {
-                        const lineY = y(labelValue);
-
-                        const gridLine = document.createElementNS(svgNS, 'line');
-                        gridLine.setAttribute('class', labelValue === 100 ? 'baseline' : 'grid-line');
-                        gridLine.setAttribute('x1', 40);
-                        gridLine.setAttribute('y1', lineY);
-                        gridLine.setAttribute('x2', 520);
-                        gridLine.setAttribute('y2', lineY);
-                        svg.appendChild(gridLine);
-
-                        const label = document.createElementNS(svgNS, 'text');
-                        label.setAttribute('class', 'axis-label');
-                        label.setAttribute('x', 35);
-                        label.setAttribute('y', lineY + 4);
-                        label.textContent = labelValue;
-                        svg.appendChild(label);
-                    }
-                });
-
-                // --- (Решта коду для створення точок та лінії графіку залишається без змін) ---
-                const points = yearData.map((val, i) => val !== null ? `${x(i)},${y(val)}` : null).filter(Boolean);
-
-                if (points.length > 1) {
-                    const polyline = document.createElementNS(svgNS, 'polyline');
-                    polyline.setAttribute('class', 'chart-line');
-                    polyline.setAttribute('points', points.join(' '));
-                    svg.appendChild(polyline);
-                }
-
-                yearData.forEach((val, i) => {
-                    if (val === null) return;
-                    const pointY = y(val);
-
-                    const circle = document.createElementNS(svgNS, 'circle');
-                    circle.setAttribute('class', `chart-point ${val >= 100 ? 'positive' : 'negative'}`);
-                    circle.setAttribute('cx', x(i));
-                    circle.setAttribute('cy', pointY);
-                    circle.setAttribute('r', 4);
-
-                    const title = document.createElementNS(svgNS, 'title');
-                    title.textContent = `${months[i]}: ${val}`;
-                    circle.appendChild(title);
-                    svg.appendChild(circle);
-
-                    const pointLabel = document.createElementNS(svgNS, 'text');
-                    pointLabel.setAttribute('class', 'point-label');
-                    pointLabel.setAttribute('x', x(i));
-                    pointLabel.setAttribute('y', pointY - 12);
-                    pointLabel.textContent = val;
-                    svg.appendChild(pointLabel);
-                });
-
-                months.forEach((month, i) => {
-                    const label = document.createElementNS(svgNS, 'text');
-                    label.setAttribute('class', 'month-label');
-                    label.setAttribute('x', x(i));
-                    label.setAttribute('y', 230);
-                    label.textContent = month;
-                    svg.appendChild(label);
-                });
-
-                const chartTitle = document.createElement('div');
-                chartTitle.className = 'chart-title';
-                chartTitle.textContent = `Індекс інфляції за ${year} рік`;
-
-                chartWrapper.appendChild(svg);
-                chartWrapper.appendChild(chartTitle);
-                chartContainer.appendChild(chartWrapper);
-            };
-
-            const handleYearClick = (year) => {
-                if (isTransitionLocked) return;
-
-                document.querySelectorAll('.year-cell.active').forEach(cell => cell.classList.remove('active'));
-
-                if (currentYear === year) {
-                    modalOverlay.classList.remove('chart-view-active');
-                    tableModal.appendChild(closeButton);
-                    currentYear = null;
-                } else {
-                    if (currentYear !== null) {
-                        isTransitionLocked = true;
-                        setTimeout(() => { isTransitionLocked = false; }, 200);
-                    }
-
-                    document.querySelector(`.year-cell[data-year="${year}"]`).classList.add('active');
-                    createChart(year);
-                    currentYear = year;
-                    modalOverlay.classList.add('chart-view-active');
-                    chartModal.appendChild(closeButton);
-                }
-            };
-
-            const openModal = async () => {
-                if (!tableElement) {
-                    await createIifTable();
-                }
-                document.documentElement.classList.add('modal-open');
-                document.body.classList.add('modal-open');
-                modalOverlay.classList.add('visible');
-            };
-
-            const closeModal = () => {
-                document.documentElement.classList.remove('modal-open');
-                document.body.classList.remove('modal-open');
-                modalOverlay.classList.remove('visible');
-                modalOverlay.classList.remove('chart-view-active');
-                currentYear = null;
-                tableModal.appendChild(closeButton);
-                document.querySelectorAll('.year-cell.active').forEach(cell => cell.classList.remove('active'));
-            };
-
-            document.getElementById('docs-grid').addEventListener('click', (event) => {
-                const featureBlock = event.target.closest('a.feature-block');
-                if (featureBlock && featureBlock.getAttribute('href') === '#iif-container') {
-                    event.preventDefault();
-                    openModal();
-                }
-            });
-
-            tableWrapper.addEventListener('click', (event) => {
-                if (event.target.classList.contains('year-cell')) {
-                    handleYearClick(event.target.dataset.year);
-                }
-            });
-
-            closeButton.addEventListener('click', closeModal);
-            modalOverlay.addEventListener('click', (event) => {
-                if (event.target === modalOverlay) {
-                    closeModal();
-                }
-            });
-        });
-    </script>
 </body>
 </html>

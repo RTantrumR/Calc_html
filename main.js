@@ -541,14 +541,41 @@ async function loadDocuments() {
 
                         const featurePreview = document.createElement('div');
                         featurePreview.className = 'feature-preview';
-                        featurePreview.innerHTML = `
-                            <div class="business-preview">
-                                <div class="preview-docs">
-                                    <div class="doc doc-2">
-                                        <div class="line line-short"></div><div class="line line-long"></div><div class="line line-long"></div><div class="line line-medium"></div>
+
+                        // --- ОСЬ ЗМІНА: Умовне додавання візуалізації ---
+                        if (doc.link === '#iif-container') {
+                            // Якщо це "Індекс інфляції", використовуємо новий вигляд (цей вам сподобався)
+                            featurePreview.innerHTML = `
+                                <div class="inflation-preview">
+                                    <div class="inflation-chart-container">
+                                        <div class="y-labels">
+                                            <span>115</span><span>110</span><span>105</span><span>100</span>
+                                        </div>
+                                        <div class="chart-area">
+                                             <div class="grid-line" style="bottom: 75%;"></div>
+                                             <div class="grid-line" style="bottom: 50%;"></div>
+                                             <div class="grid-line" style="bottom: 25%;"></div>
+                                             <div class="grid-line base-line" style="bottom: 1px;"></div>
+                                             <svg viewBox="0 0 100 60" preserveAspectRatio="none">
+                                                 <polyline fill="none" stroke="var(--primary-color)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="5,50 25,40 45,45 65,25 85,15" />
+                                             </svg>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>`;
+                                    <div class="kpi">
+                                        Річна інфляція: <span class="kpi-value">+12.4%</span>
+                                    </div>
+                                </div>`;
+                        } else {
+                            // Для всіх інших документів повертаємо оригінальний простий вигляд
+                            featurePreview.innerHTML = `
+                                <div class="business-preview">
+                                    <div class="preview-docs">
+                                        <div class="doc doc-2">
+                                            <div class="line line-short"></div><div class="line line-long"></div><div class="line line-long"></div><div class="line line-medium"></div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        }
 
                         const featureDesc = document.createElement('div');
                         featureDesc.className = 'feature-description';
@@ -743,35 +770,33 @@ window.addEventListener("DOMContentLoaded", async () => {
         const hasAgreed = localStorage.getItem('rulesAgreed');
 
         if (hasAgreed === 'true') {
-            if (rulesModal) rulesModal.classList.remove('visible');
+            if (rulesModal) rulesModal.style.display = 'none';
             runEntryAnimation();
         } else {
-            if (rulesModal) rulesModal.classList.add('visible');
+            if (rulesModal) rulesModal.style.display = 'flex';
         }
 
         if (agreeButton) {
             agreeButton.addEventListener('click', () => {
                 localStorage.setItem('rulesAgreed', 'true');
-                if (rulesModal) rulesModal.classList.remove('visible');
-                // Невелика затримка перед запуском анімації
+                if (rulesModal) rulesModal.style.display = 'none';
                 setTimeout(runEntryAnimation, 100);
             });
         }
     } else {
-         // Якщо сітки немає, просто обробляємо модальне вікно (для інших сторінок)
         const rulesModal = document.getElementById('rules-modal');
         if (rulesModal) {
             const agreeButton = document.getElementById('agree-button');
             const hasAgreed = localStorage.getItem('rulesAgreed');
 
-            if (!hasAgreed) {
-                rulesModal.classList.add('visible');
+            if (hasAgreed !== 'true') {
+                rulesModal.style.display = 'flex';
             }
 
             if (agreeButton) {
                 agreeButton.addEventListener('click', () => {
                     localStorage.setItem('rulesAgreed', 'true');
-                    rulesModal.classList.remove('visible');
+                    rulesModal.style.display = 'none';
                 });
             }
         }
@@ -779,7 +804,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const contactEmailLink = document.getElementById('contact-email');
     if (contactEmailLink) {
-        contactEmailLink.addEventListener('click', () => {
+        contactEmailLink.addEventListener('click', (e) => {
+            e.preventDefault();
             const email = contactEmailLink.href.replace('mailto:', '');
             const notification = document.getElementById('copy-notification');
 
@@ -822,19 +848,360 @@ window.addEventListener("DOMContentLoaded", async () => {
             alert("Помилка завантаження критичних даних.");
         }
 
-        resultsBody.addEventListener('click', (event) => {
-            if (event.target.classList.contains('row-selector-arrow')) {
-                const row = event.target.closest('tr');
-                if (row) {
-                    row.classList.toggle('row-highlighted');
+        if (resultsBody) {
+            resultsBody.addEventListener('click', (event) => {
+                if (event.target.classList.contains('row-selector-arrow')) {
+                    const row = event.target.closest('tr');
+                    if (row) {
+                        row.classList.toggle('row-highlighted');
+                    }
                 }
-            }
-        });
+            });
+        }
         showBtn.addEventListener("click", showTableLayout);
         downloadPdfBtn.addEventListener("click", downloadPdf);
         templateSelect.addEventListener("change", () => applyTemplate(templateSelect, dayInputs));
         dayInputs.forEach(input => input.addEventListener('input', () => validateAllInputs(dayInputs)));
 
         validateAllInputs(dayInputs);
+    }
+
+    // --- ЛОГІКА ДЛЯ СТОРІНКИ ДОКУМЕНТІВ ---
+    const docsGrid = document.getElementById('docs-grid');
+    if (docsGrid) {
+        const modalOverlay = document.getElementById('iif-modal-overlay');
+        const tableModal = document.getElementById('iif-table-modal');
+        const chartModal = document.getElementById('iif-chart-modal');
+        const cumulativeChartModal = document.getElementById('iif-cumulative-chart-modal');
+        const tableWrapper = document.getElementById('iif-table-wrapper');
+        const chartContainer = document.getElementById('iif-chart-container');
+        const cumulativeChartContainer = document.getElementById('iif-cumulative-chart-container');
+        const closeButton = document.getElementById('modal-close-button');
+
+        let iifData = null;
+        let currentYear = null;
+        let isTransitionLocked = false;
+        let tableElement = null;
+
+        const createIifTable = async () => {
+            try {
+                const response = await fetch('iif_data.json');
+                iifData = await response.json();
+
+                tableElement = document.createElement('table');
+                tableElement.className = 'iif-table';
+                const thead = document.createElement('thead');
+                const tbody = document.createElement('tbody');
+                const headerRow = document.createElement('tr');
+                const yearHeader = document.createElement('th');
+                yearHeader.textContent = 'Рік';
+                headerRow.appendChild(yearHeader);
+                ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру', 'Всього'].forEach(month => {
+                    const th = document.createElement('th');
+                    th.textContent = month;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                tableElement.appendChild(thead);
+                const sortedYears = Object.keys(iifData).sort((a, b) => b - a);
+                sortedYears.forEach(year => {
+                    const row = document.createElement('tr');
+                    const yearCell = document.createElement('td');
+                    yearCell.textContent = year;
+                    yearCell.dataset.year = year;
+                    yearCell.classList.add('year-cell');
+                    row.appendChild(yearCell);
+                    iifData[year].forEach(value => {
+                        const cell = document.createElement('td');
+                        cell.textContent = value !== null ? value : '-';
+                        row.appendChild(cell);
+                    });
+                    tbody.appendChild(row);
+                });
+                tableElement.appendChild(tbody);
+                tableWrapper.appendChild(tableElement);
+            } catch (error) {
+                console.error('Не вдалося завантажити дані інфляції:', error);
+                tableWrapper.innerHTML = '<p>Помилка завантаження даних.</p>';
+            }
+        };
+
+        const createChart = (year) => {
+            const yearData = iifData[year].slice(0, 12);
+            const months = ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру'];
+
+            chartContainer.innerHTML = '';
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'chart-wrapper';
+
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute('class', 'line-chart');
+            svg.setAttribute('viewBox', '0 0 550 280');
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+            // --- ЗМІНЕНО: Фіксований діапазон для осі Y ---
+            const viewMax = 110;
+            const viewMin = 95;
+            const range = viewMax - viewMin;
+
+            const y = (val) => 240 - ((val - viewMin) / range * 210);
+            const xStep = 480 / 12;
+            const x = (index) => 40 + (index * xStep) + (xStep / 2);
+
+            const yAxis = document.createElementNS(svgNS, 'line');
+            yAxis.setAttribute('class', 'axis-line');
+            yAxis.setAttribute('x1', '40');
+            yAxis.setAttribute('y1', 10);
+            yAxis.setAttribute('x2', '40');
+            yAxis.setAttribute('y2', 240);
+            svg.appendChild(yAxis);
+
+            // --- ЗМІНЕНО: Статичні мітки для осі Y з кроком 5 ---
+            const yLabels = [95, 100, 105, 110];
+            yLabels.forEach(labelValue => {
+                const lineY = y(labelValue);
+
+                const gridLine = document.createElementNS(svgNS, 'line');
+                gridLine.setAttribute('class', labelValue === 100 ? 'baseline' : 'grid-line');
+                gridLine.setAttribute('x1', 40);
+                gridLine.setAttribute('y1', lineY);
+                gridLine.setAttribute('x2', 520);
+                gridLine.setAttribute('y2', lineY);
+                svg.appendChild(gridLine);
+
+                const label = document.createElementNS(svgNS, 'text');
+                label.setAttribute('class', 'axis-label');
+                label.setAttribute('x', 35);
+                label.setAttribute('y', lineY + 4);
+                label.textContent = labelValue; // Тепер числа будуть цілими
+                svg.appendChild(label);
+            });
+
+            const points = yearData.map((val, i) => val !== null ? `${x(i)},${y(val)}` : null).filter(Boolean);
+
+            if (points.length > 1) {
+                const polyline = document.createElementNS(svgNS, 'polyline');
+                polyline.setAttribute('class', 'chart-line');
+                polyline.setAttribute('points', points.join(' '));
+                svg.appendChild(polyline);
+            }
+
+            yearData.forEach((val, i) => {
+                if (val === null) return;
+                const pointY = y(val);
+
+                const circle = document.createElementNS(svgNS, 'circle');
+                circle.setAttribute('class', `chart-point ${val >= 100 ? 'positive' : 'negative'}`);
+                circle.setAttribute('cx', x(i));
+                circle.setAttribute('cy', pointY);
+                circle.setAttribute('r', 4);
+
+                const title = document.createElementNS(svgNS, 'title');
+                title.textContent = `${months[i]}: ${val}`;
+                circle.appendChild(title);
+                svg.appendChild(circle);
+
+                const pointLabel = document.createElementNS(svgNS, 'text');
+                pointLabel.setAttribute('class', 'point-label');
+                pointLabel.setAttribute('x', x(i));
+                pointLabel.setAttribute('y', pointY - 12);
+                pointLabel.textContent = val.toFixed(1);
+                svg.appendChild(pointLabel);
+            });
+
+            months.forEach((month, i) => {
+                const label = document.createElementNS(svgNS, 'text');
+                label.setAttribute('class', 'month-label');
+                label.setAttribute('x', x(i));
+                label.setAttribute('y', 255);
+                label.textContent = month;
+                svg.appendChild(label);
+            });
+
+            const chartTitle = document.createElement('div');
+            chartTitle.className = 'chart-title';
+            chartTitle.textContent = `Індекс інфляції за ${year} рік`;
+
+            chartWrapper.appendChild(svg);
+            chartWrapper.appendChild(chartTitle);
+            chartContainer.appendChild(chartWrapper);
+        };
+
+        const createCumulativeChart = (year) => {
+            const yearData = iifData[year].slice(0, 12);
+            const months = ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру'];
+
+            const cumulativeData = [];
+            let currentValue = 100.0;
+            yearData.forEach(val => {
+                if (val !== null) {
+                    currentValue *= (val / 100);
+                }
+                cumulativeData.push(val !== null ? currentValue : null);
+            });
+
+            cumulativeChartContainer.innerHTML = '';
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'chart-wrapper';
+
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute('class', 'line-chart');
+            svg.setAttribute('viewBox', '0 0 550 280');
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+            const validData = cumulativeData.filter(v => v !== null);
+            const dataMax = Math.max(...validData, 100);
+            const dataMin = 100;
+            const verticalPadding = Math.max(5, (dataMax - dataMin) * 0.1);
+            const viewMax = dataMax + verticalPadding;
+            const viewMin = 95;
+            const range = viewMax - viewMin;
+
+            const y = (val) => 240 - ((val - viewMin) / range * 210);
+            const xStep = 480 / 12;
+            const x = (index) => 40 + (index * xStep) + (xStep / 2);
+
+            const yAxis = document.createElementNS(svgNS, 'line');
+            yAxis.setAttribute('class', 'axis-line');
+            yAxis.setAttribute('x1', '40'); yAxis.setAttribute('y1', '10');
+            yAxis.setAttribute('x2', '40'); yAxis.setAttribute('y2', '240');
+            svg.appendChild(yAxis);
+
+            const tickValues = [100];
+            for (let i = 110; i < viewMax; i += 10) {
+                tickValues.push(Math.round(i/10)*10);
+            }
+            const uniqueTicks = [...new Set(tickValues)];
+
+            uniqueTicks.forEach(labelValue => {
+                if (labelValue >= viewMin && labelValue <= viewMax) {
+                    const lineY = y(labelValue);
+                    const gridLine = document.createElementNS(svgNS, 'line');
+                    gridLine.setAttribute('class', labelValue === 100 ? 'baseline' : 'grid-line');
+                    gridLine.setAttribute('x1', 40); gridLine.setAttribute('y1', lineY);
+                    gridLine.setAttribute('x2', 520); gridLine.setAttribute('y2', lineY);
+                    svg.appendChild(gridLine);
+                    const label = document.createElementNS(svgNS, 'text');
+                    label.setAttribute('class', 'axis-label');
+                    label.setAttribute('x', 35); label.setAttribute('y', lineY + 4);
+                    label.textContent = labelValue;
+                    svg.appendChild(label);
+                }
+            });
+
+            const points = cumulativeData.map((val, i) => val !== null ? `${x(i)},${y(val)}` : null).filter(Boolean);
+            if (points.length > 0) {
+                const polyline = document.createElementNS(svgNS, 'polyline');
+                polyline.setAttribute('class', 'chart-line');
+                polyline.setAttribute('points', `40,${y(100)} ` + points.join(' '));
+                svg.appendChild(polyline);
+            }
+
+            cumulativeData.forEach((val, i) => {
+                if (val === null) return;
+                const pointY = y(val);
+                const circle = document.createElementNS(svgNS, 'circle');
+                circle.setAttribute('class', `chart-point ${val >= 100 ? 'positive' : 'negative'}`);
+                circle.setAttribute('cx', x(i));
+                circle.setAttribute('cy', pointY);
+                circle.setAttribute('r', 4);
+                const title = document.createElementNS(svgNS, 'title');
+                title.textContent = `${months[i]}: ${val.toFixed(2)}`;
+                circle.appendChild(title);
+                svg.appendChild(circle);
+
+                // --- ДОДАНО: числові значення над точками ---
+                const pointLabel = document.createElementNS(svgNS, 'text');
+                pointLabel.setAttribute('class', 'point-label');
+                pointLabel.setAttribute('x', x(i));
+                pointLabel.setAttribute('y', pointY - 12);
+                pointLabel.textContent = val.toFixed(1);
+                svg.appendChild(pointLabel);
+            });
+
+            months.forEach((month, i) => {
+                const label = document.createElementNS(svgNS, 'text');
+                label.setAttribute('class', 'month-label');
+                label.setAttribute('x', x(i));
+                label.setAttribute('y', 255);
+                label.textContent = month;
+                svg.appendChild(label);
+            });
+
+            const chartTitle = document.createElement('div');
+            chartTitle.className = 'chart-title';
+            chartTitle.textContent = `Зростання цін за ${year} рік у відсотках(поч. 100)`;
+            chartWrapper.appendChild(svg);
+            chartWrapper.appendChild(chartTitle);
+            cumulativeChartContainer.appendChild(chartWrapper);
+        };
+
+
+        const handleYearClick = (year) => {
+            if (isTransitionLocked) return;
+
+            document.querySelectorAll('.year-cell.active').forEach(cell => cell.classList.remove('active'));
+
+            if (currentYear === year) {
+                modalOverlay.classList.remove('chart-view-active');
+                currentYear = null;
+            } else {
+                if (currentYear !== null) {
+                    isTransitionLocked = true;
+                    setTimeout(() => { isTransitionLocked = false; }, 200);
+                }
+
+                document.querySelector(`.year-cell[data-year="${year}"]`).classList.add('active');
+                createChart(year);
+                createCumulativeChart(year);
+                currentYear = year;
+                modalOverlay.classList.add('chart-view-active');
+            }
+        };
+
+        const openModal = async () => {
+            if (!tableElement) {
+                await createIifTable();
+            }
+            document.documentElement.classList.add('modal-open');
+            document.body.classList.add('modal-open');
+            modalOverlay.classList.add('visible');
+        };
+
+        const closeModal = () => {
+            document.documentElement.classList.remove('modal-open');
+            document.body.classList.remove('modal-open');
+            modalOverlay.classList.remove('visible');
+            modalOverlay.classList.remove('chart-view-active');
+            currentYear = null;
+            document.querySelectorAll('.year-cell.active').forEach(cell => cell.classList.remove('active'));
+        };
+
+        if (docsGrid) {
+            docsGrid.addEventListener('click', (event) => {
+                const featureBlock = event.target.closest('a.feature-block');
+                if (featureBlock && featureBlock.getAttribute('href') === '#iif-container') {
+                    event.preventDefault();
+                    openModal();
+                }
+            });
+        }
+
+        if (tableWrapper) {
+            tableWrapper.addEventListener('click', (event) => {
+                if (event.target.classList.contains('year-cell')) {
+                    handleYearClick(event.target.dataset.year);
+                }
+            });
+        }
+
+        if(closeButton) closeButton.addEventListener('click', closeModal);
+        if(modalOverlay) modalOverlay.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) {
+                closeModal();
+            }
+        });
     }
 });
