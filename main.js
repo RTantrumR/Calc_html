@@ -107,6 +107,10 @@ function showTableLayout() {
     const ignoreHolidays = document.getElementById("ignoreHolidays").checked;
     const hours = Array.from(document.querySelectorAll(".day")).map(e => parseFloat(e.value) || 0);
 
+    const totalHours = hours.reduce((a, b) => a + b, 0);
+    const longDaysCount = hours.filter(h => h >= 8).length;
+    const preHolidaysAreCalculated = (totalHours >= 40 || longDaysCount >= 2);
+
     const currentCalculationData = { year, selected, hours: JSON.stringify(hours), ignoreHolidays };
     if (JSON.stringify(currentCalculationData) !== JSON.stringify(lastCalculationData)) {
         console.log("[UI Log] Кнопка 'Розрахувати' натиснута. Викликаю incrementCounter.");
@@ -137,10 +141,15 @@ function showTableLayout() {
         ["nonWorking", "Неробочі дні"], ["working", "Робочі дні"], ["hours", "К-ть годин"]
     ];
     const holidayKeys = new Set(['holiday', 'holidayRawDates', 'preholiday', 'preholidayDates']);
+    const preholidayKeys = new Set(['preholiday', 'preholidayDates']);
     const nonNumericTotalKeys = new Set(['holidayRawDates', 'preholidayDates']);
 
     for (const [key, label] of rows) {
         if (ignoreHolidays && holidayKeys.has(key)) {
+            continue;
+        }
+
+        if (preholidayKeys.has(key) && !preHolidaysAreCalculated) {
             continue;
         }
 
@@ -311,6 +320,10 @@ async function downloadPdf() {
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
 
+        const totalWeeklyHours = hours.reduce((acc, h) => acc + (parseFloat(h) || 0), 0);
+        const preHolidaysAreCalculated = totalWeeklyHours >= 40 || hours.filter(h => h >= 8).length >= 2;
+
+
         if (pdfColors.pageColor[0] !== 255 || pdfColors.pageColor[1] !== 255 || pdfColors.pageColor[2] !== 255) {
             doc.setFillColor(...pdfColors.pageColor);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
@@ -319,7 +332,6 @@ async function downloadPdf() {
         doc.setTextColor(...pdfColors.textColor);
 
         const workingDaysCount = hours.filter(h => h > 0).length;
-        const totalWeeklyHours = hours.reduce((acc, h) => acc + (parseFloat(h) || 0), 0);
         const weeklyHoursFormatted = formatWeeklyHours(totalWeeklyHours);
         const dayNames = ["Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Нд."];
         const title = `Норма робочого часу за ${year} рік за ${workingDaysCount}-денного робочого тижня (${weeklyHoursFormatted} на тиждень)`;
@@ -349,6 +361,11 @@ async function downloadPdf() {
                 ["preholiday", "Передсвяткові дні"], ["preholidayDates", "Дати передсвяткових днів"], ["weekend", "Вихідні дні"],
                 ["nonWorking", "Неробочі дні"], ["working", "Робочі дні"], ["hours", "К-ть годин"]
             ];
+        }
+
+        if (!preHolidaysAreCalculated) {
+            const preholidayKeys = new Set(['preholiday', 'preholidayDates']);
+            rowConfigs = rowConfigs.filter(([key]) => !preholidayKeys.has(key));
         }
 
         const tableBody = rowConfigs.map(([key, label]) => {
@@ -544,7 +561,6 @@ async function loadDocuments() {
 
                         // --- ОСЬ ЗМІНА: Умовне додавання візуалізації ---
                         if (doc.link === '#iif-container') {
-                            // Якщо це "Індекс інфляції", використовуємо новий вигляд (цей вам сподобався)
                             featurePreview.innerHTML = `
                                 <div class="inflation-preview">
                                     <div class="inflation-chart-container">
