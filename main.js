@@ -552,15 +552,20 @@ async function loadDocuments() {
 
                     docsByYear[year].forEach(doc => {
                         const docLink = document.createElement('a');
-                        docLink.href = doc.link;
-                        docLink.target = '_blank';
+                        if (doc.type === 'table') {
+                            docLink.href = `#${doc.id}`;
+                        } else {
+                            docLink.href = doc.link;
+                            docLink.target = '_blank';
+                        }
                         docLink.className = 'feature-block';
 
                         const featurePreview = document.createElement('div');
                         featurePreview.className = 'feature-preview';
 
                         // --- ОСЬ ЗМІНА: Умовне додавання візуалізації ---
-                        if (doc.link === '#iif-container') {
+                        if (doc.link === '#iif-container' || (doc.type === 'table' && doc.id === 'iif-container')) {
+                            // Якщо це "Індекс інфляції", використовуємо його вигляд
                             featurePreview.innerHTML = `
                                 <div class="inflation-preview">
                                     <div class="inflation-chart-container">
@@ -579,6 +584,30 @@ async function loadDocuments() {
                                     </div>
                                     <div class="kpi">
                                         Річна інфляція: <span class="kpi-value">+12.4%</span>
+                                    </div>
+                                </div>`;
+                        } else if (doc.type === 'table' && doc.id === 'vs-container') {
+                            featurePreview.innerHTML = `
+                                <div class="martial-law-preview">
+                                    <div class="preview-document doc-back">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/%D0%A2%D1%80%D0%B8%D0%B7%D1%83%D0%B1.svg" alt="Тризуб" class="tryzub-svg-small">
+                                        <div class="doc-text-lines">
+                                            <div class="doc-line line-short"></div>
+                                            <div class="doc-line line-long"></div>
+                                            <div class="doc-line line-long"></div>
+                                            <div class="doc-line line-medium"></div>
+                                            <div class="doc-line line-long"></div>
+                                        </div>
+                                    </div>
+                                    <div class="preview-document doc-front">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/%D0%A2%D1%80%D0%B8%D0%B7%D1%83%D0%B1.svg" alt="Тризуб" class="tryzub-svg-small">
+                                        <div class="doc-text-lines">
+                                            <div class="doc-line line-short"></div>
+                                            <div class="doc-line line-long"></div>
+                                            <div class="doc-line line-long"></div>
+                                            <div class="doc-line line-medium"></div>
+                                            <div class="doc-line line-long"></div>
+                                        </div>
                                     </div>
                                 </div>`;
                         } else {
@@ -755,6 +784,89 @@ function setupFlyoutMenu() {
         }
     });
 }
+
+// --- ЛОГІКА ДЛЯ ТАБЛИЦІ ВОЄННОГО СТАНУ ---
+const vsModalOverlay = document.getElementById('vs-modal-overlay');
+const vsTableWrapper = document.getElementById('vs-table-wrapper');
+const vsCloseButton = document.getElementById('vs-modal-close-button');
+let vsTableElement = null;
+
+const createVsTable = async () => {
+        if (vsTableElement) return; // Створюємо лише один раз
+
+        try {
+            const response = await fetch('VS.json');
+            const vsData = await response.json();
+
+            // РЕВЕРС: Сортуємо масив, щоб найновіші дати були зверху
+            vsData.reverse();
+
+            vsTableElement = document.createElement('table');
+            vsTableElement.className = 'iif-table vs-table'; // Додаємо новий клас
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+            const headerRow = document.createElement('tr');
+
+            const headers = ['Дата запровадження', 'Дата закінчення', 'Нормативне підґрунтя'];
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            vsTableElement.appendChild(thead);
+
+            vsData.forEach(item => {
+                const row = document.createElement('tr');
+                // ОНОВЛЕНО: Використовуємо класи для кращого стилю та прибираємо <br>
+                row.innerHTML = `
+                    <td class="vs-date-cell">${item['Дата та час запровадження ВС'].replace(' ', '<br>')}</td>
+                    <td class="vs-date-cell">${item['Дата та час закінчення ВС'].replace(' ', '<br>')}</td>
+                    <td class="normative-act-cell">${item['Нормативне підґрунтя'].replace(' та ', ' та<br>')}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            vsTableElement.appendChild(tbody);
+            vsTableWrapper.innerHTML = ''; // Очищуємо контейнер
+            vsTableWrapper.appendChild(vsTableElement);
+
+        } catch (error) {
+            console.error('Не вдалося завантажити дані про воєнний стан:', error);
+            vsTableWrapper.innerHTML = '<p>Помилка завантаження даних.</p>';
+        }
+};
+
+const openVsModal = async () => {
+    await createVsTable();
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
+    vsModalOverlay.classList.add('visible');
+};
+
+const closeVsModal = () => {
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
+    vsModalOverlay.classList.remove('visible');
+};
+
+const docsGrid = document.getElementById('docs-grid');
+if (docsGrid) {
+    docsGrid.addEventListener('click', (event) => {
+        const featureBlock = event.target.closest('a.feature-block');
+        if (featureBlock && featureBlock.getAttribute('href') === '#vs-container') {
+            event.preventDefault();
+            openVsModal();
+        }
+    });
+}
+
+if(vsCloseButton) vsCloseButton.addEventListener('click', closeVsModal);
+if(vsModalOverlay) vsModalOverlay.addEventListener('click', (event) => {
+    if (event.target === vsModalOverlay) {
+        closeVsModal();
+    }
+});
 
 window.addEventListener("DOMContentLoaded", async () => {
 

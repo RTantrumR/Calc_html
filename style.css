@@ -1330,6 +1330,39 @@ tr.row-highlighted td {
     font-size: 1rem;
 }
 
+/* --- Стилі для модального вікна з таблицею воєнного стану --- */
+#vs-table-modal {
+    width: 90%;
+    max-width: 800px; /* Зменшуємо ширину назад до 800px */
+    height: auto;
+    max-height: 90vh;
+}
+
+#vs-table-wrapper {
+    overflow-y: auto;
+    padding: 1.5rem;
+    padding-top: 0;
+}
+
+.vs-table {
+    table-layout: auto;
+}
+
+.vs-table td {
+    white-space: normal;
+}
+
+.vs-table .vs-date-cell {
+    width: 20%;
+}
+
+.vs-table .normative-act-cell {
+    width: 60%;
+    text-align: left;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
 @keyframes doc-fade-in {
     from {
         opacity: 0;

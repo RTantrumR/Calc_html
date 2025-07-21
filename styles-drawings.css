@@ -774,3 +774,73 @@ body.modal-open, html.modal-open {
     color: var(--primary-color);
     margin-left: 0.5em;
 }
+
+/* --- Вітрина "Періоди воєнного стану" (Фінальна версія) --- */
+.martial-law-preview {
+    width: 100%;
+    height: 100%;
+    background-color: var(--surface-highlight-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.2em;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.preview-document {
+    position: absolute;
+    width: 40%; /* Зробили документи вужчими */
+    height: 90%; /* І значно вищими */
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.doc-back {
+    transform: rotate(-10deg) translateX(-20%);
+}
+
+.doc-front {
+    transform: rotate(6deg) translateX(20%);
+}
+
+.tryzub-svg-small {
+    position: absolute;
+    top: 8%;
+    right: 8%;
+    width: 25%;
+    height: 25%;
+    filter: drop-shadow(0 0 0 var(--primary-color));
+    opacity: 0.85;
+    z-index: 2; /* Щоб тризуб був над лініями тексту */
+}
+
+/* --- Абстрактні лінії тексту --- */
+.doc-text-lines {
+    position: absolute;
+    bottom: 10%;
+    left: 10%;
+    right: 10%;
+    width: 80%; /* Лінії тепер займають 80% ширини документа */
+    height: 60%; /* Висота всього текстового блоку */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Рівномірно розподіляємо лінії по висоті */
+}
+
+.doc-line {
+    height: 8%; /* Товщина кожної лінії */
+    background-color: var(--text-muted-color);
+    opacity: 0.5;
+    border-radius: 2px;
+}
+
+.line-long { width: 90%; }
+.line-medium { width: 75%; }
+.line-short { width: 60%; }
