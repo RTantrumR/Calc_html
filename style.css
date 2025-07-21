@@ -1079,7 +1079,7 @@ tr.row-highlighted td {
     text-decoration: none;
     color: var(--text-color);
     opacity: 0;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 14 / 9;
     display: flex;
     align-items: center;
     justify-content: center;
