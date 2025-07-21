@@ -519,132 +519,101 @@ function unlockSecretTheme() {
 }
 
 async function loadDocuments() {
-    const yearSelect = document.getElementById('year-select');
     const docsGrid = document.getElementById('docs-grid');
+    if (!docsGrid) return;
 
-    if (!yearSelect || !docsGrid) return;
+    // Видаляємо вибір року, оскільки він більше не потрібен
+    const yearSelect = document.getElementById('year-select');
+    if (yearSelect) {
+        yearSelect.parentElement.remove();
+    }
 
     try {
         const response = await fetch('documents.json');
-        const docsByYear = await response.json();
+        // Перейменовуємо змінну для кращого розуміння
+        window.docsByCategories = await response.json();
 
-        const availableYears = Object.keys(docsByYear).sort((a, b) => b - a);
-        availableYears.forEach(year => {
-            const option = document.createElement('option');
-            option.value = year;
-            option.textContent = year;
-            yearSelect.appendChild(option);
+        docsGrid.innerHTML = '';
+        const categories = Object.keys(window.docsByCategories);
+
+        categories.forEach(category => {
+            const docsInCategory = window.docsByCategories[category];
+
+            if (docsInCategory && docsInCategory.length > 0) {
+                // Створюємо заголовок для кожної категорії
+                const categoryTitle = document.createElement('h2');
+                categoryTitle.className = 'docs-year-title'; // Використовуємо старий клас для стилів
+                categoryTitle.textContent = category;
+                docsGrid.appendChild(categoryTitle);
+
+                // Створюємо контейнер для блоків цієї категорії
+                const categoryContainer = document.createElement('div');
+                categoryContainer.className = 'features-grid docs-page-grid';
+
+                docsInCategory.forEach(doc => {
+                    const docLink = document.createElement('a');
+                    docLink.className = 'feature-block';
+
+                    // Встановлюємо атрибути залежно від типу документа
+                    if (doc.type === 'modal') {
+                        docLink.href = `#${doc.id}`;
+                        docLink.setAttribute('data-doc-id', doc.id);
+                        docLink.setAttribute('data-doc-type', 'modal');
+                    } else if (doc.type === 'table') {
+                        docLink.href = `#${doc.id}`;
+                    } else {
+                        docLink.href = doc.link;
+                        docLink.target = '_blank';
+                    }
+
+                    // Створення прев'ю (візуальної частини)
+                    const featurePreview = document.createElement('div');
+                    featurePreview.className = 'feature-preview';
+
+                    if (doc.link === '#iif-container' || (doc.type === 'table' && doc.id === 'iif-container')) {
+                        featurePreview.innerHTML = `
+                            <div class="inflation-preview">
+                                <div class="inflation-chart-container">
+                                    <div class="y-labels"><span>115</span><span>110</span><span>105</span><span>100</span></div>
+                                    <div class="chart-area">
+                                         <div class="grid-line" style="bottom: 75%;"></div>
+                                         <div class="grid-line" style="bottom: 50%;"></div>
+                                         <div class="grid-line" style="bottom: 25%;"></div>
+                                         <div class="grid-line base-line" style="bottom: 1px;"></div>
+                                         <svg viewBox="0 0 100 60" preserveAspectRatio="none"><polyline fill="none" stroke="var(--primary-color)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="5,50 25,40 45,45 65,25 85,15" /></svg>
+                                    </div>
+                                </div>
+                                <div class="kpi">Річна інфляція: <span class="kpi-value">+12.4%</span></div>
+                            </div>`;
+                    } else if (doc.type === 'table' && doc.id === 'vs-container') {
+                        featurePreview.innerHTML = `
+                            <div class="martial-law-preview">
+                                <div class="preview-document doc-back"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/%D0%A2%D1%80%D0%B8%D0%B7%D1%83%D0%B1.svg" alt="Тризуб" class="tryzub-svg-small"><div class="doc-text-lines"><div class="doc-line line-short"></div><div class="doc-line line-long"></div><div class="doc-line line-long"></div><div class="doc-line line-medium"></div><div class="doc-line line-long"></div></div></div>
+                                <div class="preview-document doc-front"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/%D0%A2%D1%80%D0%B8%D0%B7%D1%83%D0%B1.svg" alt="Тризуб" class="tryzub-svg-small"><div class="doc-text-lines"><div class="doc-line line-short"></div><div class="doc-line line-long"></div><div class="doc-line line-long"></div><div class="doc-line line-medium"></div><div class="doc-line line-long"></div></div></div>
+                            </div>`;
+                    } else {
+                        featurePreview.innerHTML = `
+                            <div class="business-preview">
+                                <div class="preview-docs"><div class="doc doc-2"><div class="line line-short"></div><div class="line line-long"></div><div class="line line-long"></div><div class="line line-medium"></div></div></div>
+                            </div>`;
+                    }
+
+                    // Створення опису, що з'являється при наведенні
+                    const featureDesc = document.createElement('div');
+                    featureDesc.className = 'feature-description';
+                    const docTitle = document.createElement('h3');
+                    docTitle.textContent = doc.title;
+                    const docP = document.createElement('p');
+                    docP.textContent = doc.description;
+                    featureDesc.appendChild(docTitle);
+                    featureDesc.appendChild(docP);
+                    docLink.appendChild(featurePreview);
+                    docLink.appendChild(featureDesc);
+                    categoryContainer.appendChild(docLink);
+                });
+                docsGrid.appendChild(categoryContainer);
+            }
         });
-
-        const renderDocs = (selectedYear) => {
-            docsGrid.innerHTML = '';
-            const yearsToRender = (selectedYear === 'all') ? availableYears : [selectedYear];
-
-            yearsToRender.forEach(year => {
-                if (docsByYear[year]) {
-                    const yearTitle = document.createElement('h2');
-                    yearTitle.className = 'docs-year-title';
-                    yearTitle.textContent = year;
-                    docsGrid.appendChild(yearTitle);
-
-                    const yearContainer = document.createElement('div');
-                    yearContainer.className = 'features-grid docs-page-grid';
-
-                    docsByYear[year].forEach(doc => {
-                        const docLink = document.createElement('a');
-                        if (doc.type === 'table') {
-                            docLink.href = `#${doc.id}`;
-                        } else {
-                            docLink.href = doc.link;
-                            docLink.target = '_blank';
-                        }
-                        docLink.className = 'feature-block';
-
-                        const featurePreview = document.createElement('div');
-                        featurePreview.className = 'feature-preview';
-
-                        // --- ОСЬ ЗМІНА: Умовне додавання візуалізації ---
-                        if (doc.link === '#iif-container' || (doc.type === 'table' && doc.id === 'iif-container')) {
-                            // Якщо це "Індекс інфляції", використовуємо його вигляд
-                            featurePreview.innerHTML = `
-                                <div class="inflation-preview">
-                                    <div class="inflation-chart-container">
-                                        <div class="y-labels">
-                                            <span>115</span><span>110</span><span>105</span><span>100</span>
-                                        </div>
-                                        <div class="chart-area">
-                                             <div class="grid-line" style="bottom: 75%;"></div>
-                                             <div class="grid-line" style="bottom: 50%;"></div>
-                                             <div class="grid-line" style="bottom: 25%;"></div>
-                                             <div class="grid-line base-line" style="bottom: 1px;"></div>
-                                             <svg viewBox="0 0 100 60" preserveAspectRatio="none">
-                                                 <polyline fill="none" stroke="var(--primary-color)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="5,50 25,40 45,45 65,25 85,15" />
-                                             </svg>
-                                        </div>
-                                    </div>
-                                    <div class="kpi">
-                                        Річна інфляція: <span class="kpi-value">+12.4%</span>
-                                    </div>
-                                </div>`;
-                        } else if (doc.type === 'table' && doc.id === 'vs-container') {
-                            featurePreview.innerHTML = `
-                                <div class="martial-law-preview">
-                                    <div class="preview-document doc-back">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/%D0%A2%D1%80%D0%B8%D0%B7%D1%83%D0%B1.svg" alt="Тризуб" class="tryzub-svg-small">
-                                        <div class="doc-text-lines">
-                                            <div class="doc-line line-short"></div>
-                                            <div class="doc-line line-long"></div>
-                                            <div class="doc-line line-long"></div>
-                                            <div class="doc-line line-medium"></div>
-                                            <div class="doc-line line-long"></div>
-                                        </div>
-                                    </div>
-                                    <div class="preview-document doc-front">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/%D0%A2%D1%80%D0%B8%D0%B7%D1%83%D0%B1.svg" alt="Тризуб" class="tryzub-svg-small">
-                                        <div class="doc-text-lines">
-                                            <div class="doc-line line-short"></div>
-                                            <div class="doc-line line-long"></div>
-                                            <div class="doc-line line-long"></div>
-                                            <div class="doc-line line-medium"></div>
-                                            <div class="doc-line line-long"></div>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        } else {
-                            // Для всіх інших документів повертаємо оригінальний простий вигляд
-                            featurePreview.innerHTML = `
-                                <div class="business-preview">
-                                    <div class="preview-docs">
-                                        <div class="doc doc-2">
-                                            <div class="line line-short"></div><div class="line line-long"></div><div class="line line-long"></div><div class="line line-medium"></div>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }
-
-                        const featureDesc = document.createElement('div');
-                        featureDesc.className = 'feature-description';
-
-                        const docTitle = document.createElement('h3');
-                        docTitle.textContent = doc.title;
-
-                        const docP = document.createElement('p');
-                        docP.textContent = doc.description;
-
-                        featureDesc.appendChild(docTitle);
-                        featureDesc.appendChild(docP);
-
-                        docLink.appendChild(featurePreview);
-                        docLink.appendChild(featureDesc);
-                        yearContainer.appendChild(docLink);
-                    });
-                    docsGrid.appendChild(yearContainer);
-                }
-            });
-        };
-
-        renderDocs('all');
-        yearSelect.addEventListener('change', () => renderDocs(yearSelect.value));
 
     } catch (error) {
         console.error('Помилка завантаження документів:', error);
@@ -867,6 +836,43 @@ if(vsModalOverlay) vsModalOverlay.addEventListener('click', (event) => {
         closeVsModal();
     }
 });
+
+// --- ЛОГІКА ДЛЯ УНІВЕРСАЛЬНОГО МОДАЛЬНОГО ВІКНА ---
+const genericModalOverlay = document.getElementById('generic-modal-overlay');
+const genericModalTitle = document.getElementById('generic-modal-title');
+const genericModalContent = document.getElementById('generic-modal-content');
+const genericModalCloseButton = document.getElementById('generic-modal-close-button');
+
+const openGenericModal = async (config) => {
+    if (!config || !config.data_url) return;
+
+    genericModalTitle.textContent = config.title || 'Довідка';
+    genericModalContent.innerHTML = '<p>Завантаження...</p>';
+    genericModalOverlay.classList.add('visible');
+    document.documentElement.classList.add('modal-open');
+
+    try {
+        const response = await fetch(config.data_url);
+        const data = await response.json();
+        genericModalContent.innerHTML = data.content;
+    } catch (error) {
+        console.error('Помилка завантаження даних для модального вікна:', error);
+        genericModalContent.innerHTML = '<p>Не вдалося завантажити дані.</p>';
+    }
+};
+
+const closeGenericModal = () => {
+    genericModalOverlay.classList.remove('visible');
+    document.documentElement.classList.remove('modal-open');
+};
+
+if (genericModalCloseButton) genericModalCloseButton.addEventListener('click', closeGenericModal);
+if (genericModalOverlay) genericModalOverlay.addEventListener('click', (event) => {
+    if (event.target === genericModalOverlay) {
+        closeGenericModal();
+    }
+});
+
 
 window.addEventListener("DOMContentLoaded", async () => {
 
@@ -1310,9 +1316,27 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (docsGrid) {
             docsGrid.addEventListener('click', (event) => {
                 const featureBlock = event.target.closest('a.feature-block');
-                if (featureBlock && featureBlock.getAttribute('href') === '#iif-container') {
-                    event.preventDefault();
-                    openModal();
+                if (featureBlock) {
+                    const docId = featureBlock.getAttribute('data-doc-id');
+                    const docType = featureBlock.getAttribute('data-doc-type');
+
+                    if (docId && docType === 'modal') {
+                        event.preventDefault();
+                        // Пошук конфігурації документа в новій структурі
+                        for (const category in window.docsByCategories) {
+                            const doc = window.docsByCategories[category].find(d => d.id === docId);
+                            if (doc) {
+                                openGenericModal(doc);
+                                break;
+                            }
+                        }
+                    } else if (featureBlock.getAttribute('href') === '#vs-container') {
+                        event.preventDefault();
+                        openVsModal();
+                    } else if (featureBlock.getAttribute('href') === '#iif-container') {
+                        event.preventDefault();
+                        openModal();
+                    }
                 }
             });
         }
