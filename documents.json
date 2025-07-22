@@ -14,9 +14,7 @@
   ],
   "Норми": [
     {
-      "id": "letter-economy-modal",
-      "type": "modal",
-      "data_url": "./data/Lyst_minekonom.pdf",
+      "link": "./data/Lyst_minekonom.pdf",
       "title": "Лист Міністерства економіки",
       "description": "Роз'яснення щодо застосування норм робочого часу та надання відпусток."
     },
