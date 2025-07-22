@@ -1062,15 +1062,41 @@ tr.row-highlighted td {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Змінено з 3 на 4 */
+    grid-template-columns: repeat(3, 1fr); /* Змінено з 3 на 4 */
     gap: 1.5rem;
-    width: calc(100% - 2rem); /* Скориговано ширину */
+    width: calc(100% - 14rem); /* Скориговано ширину */
+    padding: 0;
+    box-sizing: border-box;
+    margin: 1.5rem auto -1.3rem;
+}
+
+.features-docs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    width: calc(100% - 2rem);
     padding: 0;
     box-sizing: border-box;
     margin: 1.5rem auto -1.3rem;
 }
 
 .feature-block {
+    position: relative;
+    background-color: var(--surface-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text-color);
+    opacity: 0;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-docs-block {
     position: relative;
     background-color: var(--surface-color);
     border-radius: 10px;
