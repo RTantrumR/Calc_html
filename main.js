@@ -548,11 +548,11 @@ async function loadDocuments() {
 
                 // Створюємо контейнер для блоків цієї категорії
                 const categoryContainer = document.createElement('div');
-                categoryContainer.className = 'features-grid docs-page-grid';
+                categoryContainer.className = 'features-docs-grid docs-page-grid';
 
                 docsInCategory.forEach(doc => {
                     const docLink = document.createElement('a');
-                    docLink.className = 'feature-block';
+                    docLink.className = 'feature-docs-block';
 
                     // Встановлюємо атрибути залежно від типу документа
                     if (doc.type === 'modal') {
@@ -822,7 +822,7 @@ const closeVsModal = () => {
 const docsGrid = document.getElementById('docs-grid');
 if (docsGrid) {
     docsGrid.addEventListener('click', (event) => {
-        const featureBlock = event.target.closest('a.feature-block');
+        const featureBlock = event.target.closest('a.feature-docs-block');
         if (featureBlock && featureBlock.getAttribute('href') === '#vs-container') {
             event.preventDefault();
             openVsModal();
@@ -1315,7 +1315,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
         if (docsGrid) {
             docsGrid.addEventListener('click', (event) => {
-                const featureBlock = event.target.closest('a.feature-block');
+                const featureBlock = event.target.closest('a.feature-docs-block');
                 if (featureBlock) {
                     const docId = featureBlock.getAttribute('data-doc-id');
                     const docType = featureBlock.getAttribute('data-doc-type');
