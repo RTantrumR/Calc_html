@@ -1,5 +1,33 @@
 /* --- Змінні та налаштування тем --- */
 :root {
+    --primary-color: #0d6efd;
+    --primary-hover: #3d8bfd;
+    --danger-color: #ff4d4d;
+    --danger-shadow: rgba(255, 77, 77, 0.3);
+    --accent-border-color: #444c56;
+    --bg-color: #121212;
+    --surface-color: #1e1e1e;
+    --surface-hover-color: #2a2a2a;
+    --surface-highlight-color: #21262d;
+    --text-color: #e8e6e3;
+    --text-muted-color: #8b949e;
+    --border-color: #30363d;
+    --button-text-color: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --animation-glow-color: #32CD32;
+    --row-highlight-color: #2d3748;
+
+    /* PDF */
+    --page-bg: #121212;
+    --pdf-text-color: #e8e6e3;
+    --header-bg: #0d6efd;
+    --header-text: #ffffff;
+    --grid-color: #444c56;
+    --pdf-cell-bg: #1e1e1e;
+    --pdf-link-color: #3d8bfd;
+}
+
+[data-theme="light"] {
     --primary-color: #007bff;
     --primary-hover: #0056b3;
     --danger-color: #dc3545;
