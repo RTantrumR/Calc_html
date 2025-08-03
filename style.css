@@ -1,3 +1,5 @@
+/* Якщо ти на це натрапив якимось чином - дам пораду. Тікай звідси і ніколи не повертайся. Я сам тут не можу розібратися, а я це робив, тіп. */
+
 /* --- Змінні та налаштування тем --- */
 :root {
     --primary-color: #0d6efd;
@@ -167,32 +169,32 @@
     --pdf-link-color: #d81b60;
 }
 
-[data-theme="dark-green"] {
-    --primary-color: #2e7d32;
-    --primary-hover: #4caf50;
-    --danger-color: #ef5350;
-    --danger-shadow: rgba(239, 83, 80, 0.3);
-    --accent-border-color: var(--primary-color);
-    --bg-color: #121a12;
-    --surface-color: #1b2b1b;
-    --surface-hover-color: #2a4a2a;
-    --surface-highlight-color: #253f25;
-    --text-color: #e8f5e9;
-    --text-muted-color: #a5d6a7;
-    --border-color: #388e3c;
+[data-theme="light-green"] {
+    --primary-color: #34a853;
+    --primary-hover: #2c8a43;
+    --danger-color: #dc3545;
+    --danger-shadow: rgba(220, 53, 69, 0.25);
+    --accent-border-color: #a0d4b0;
+    --bg-color: #f7fbf7;
+    --surface-color: #ffffff;
+    --surface-hover-color: #f0f5f1;
+    --surface-highlight-color: #e9f2ea;
+    --text-color: #2a4731;
+    --text-muted-color: #5c7c68;
+    --border-color: #dceae1;
     --button-text-color: #ffffff;
-    --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --animation-glow-color: #81c784;
-    --row-highlight-color: #335a33;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --animation-glow-color: #4caf50;
+    --row-highlight-color: #e6f5e9;
 
-    /* PDF */
-    --page-bg: #121a12;
-    --pdf-text-color: #e8f5e9;
-    --header-bg: #2e7d32;
+    /* PDF для світло-зеленої теми */
+    --page-bg: #ffffff;
+    --pdf-text-color: #2a4731;
+    --header-bg: #34a853;
     --header-text: #ffffff;
-    --grid-color: #388e3c;
-    --pdf-cell-bg: #1b2b1b;
-    --pdf-link-color: #81c784;
+    --grid-color: #dceae1;
+    --pdf-cell-bg: #ffffff;
+    --pdf-link-color: #2c8a43;
 }
 
 [data-theme="psychedelic-rainbow"] {
@@ -286,6 +288,81 @@ body {
 
 .modal-content p {
     margin-bottom: 20px;
+}
+
+/* === ВИПРАВЛЕНО: Коректні стилі для посилань === */
+.static-content a,
+.site-footer a,
+#aggregator-rules-modal .modal-content a {
+    color: inherit; /* 1. Успадковуємо колір звичайного тексту */
+    text-decoration: none; /* 2. Прибираємо підкреслення за замовчуванням */
+    transition: color 0.2s ease;
+    font-weight: 500; /* Робимо трохи жирнішим для акценту */
+    border-bottom: 1px solid transparent; /* Готуємо місце для підкреслення */
+}
+
+.static-content a:hover,
+.site-footer a:hover,
+#aggregator-rules-modal .modal-content a:hover {
+    color: var(--primary-color); /* 3. При наведенні застосовуємо основний колір теми */
+    border-bottom-color: var(--primary-color); /* 4. Показуємо підкреслення кольором теми */
+}
+
+/* === Стилі для модального вікна агрегатора === */
+#aggregator-rules-modal {
+    display: none; /* Ховаємо за замовчуванням */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+#aggregator-rules-modal.visible {
+    display: flex; /* Показуємо при додаванні класу .visible */
+}
+
+#aggregator-rules-modal .modal-content {
+    background-color: var(--surface-color); /* ВИПРАВЛЕНО: Фон з теми */
+    color: var(--text-color); /* ВИПРАВЛЕНО: Колір тексту з теми */
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    width: 90%;
+    max-width: 550px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+#aggregator-rules-modal .modal-content ul {
+    text-align: left;
+    margin: 20px 0;
+    padding-left: 25px;
+}
+
+#aggregator-rules-modal .modal-content li {
+    margin-bottom: 10px;
+}
+
+#aggregator-agree-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: var(--primary-color); /* ВИПРАВЛЕНО: Фон кнопки з теми */
+    color: var(--button-text-color); /* ВИПРАВЛЕНО: Колір тексту кнопки з теми */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#aggregator-agree-button:hover {
+    background-color: var(--primary-hover); /* ВИПРАВЛЕНО: Фон кнопки при наведенні з теми */
+    transform: scale(1.05);
 }
 
 #agree-button {
@@ -906,8 +983,7 @@ tr.row-highlighted td {
 /* --- Додаткові акценти для тем --- */
 [data-theme="dark-purple"] h1,
 [data-theme="dark-bordeaux"] h1,
-[data-theme="dark-blue"] h1,
-[data-theme="dark-green"] h1 {
+[data-theme="dark-blue"] h1 {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -921,8 +997,9 @@ tr.row-highlighted td {
     background-image: linear-gradient(135deg, #cc3737, #c30707);
 }
 
-[data-theme="dark-green"] h1 {
-    background-image: linear-gradient(135deg, #81c784, #4caf50);
+[data-theme="light-green"] h1 {
+    color: var(--primary-color);
+    background-image: none;
 }
 
 [data-theme="pastel-pink"] h1 {
@@ -939,9 +1016,9 @@ tr.row-highlighted td {
     border: 1px solid var(--primary-color);
 }
 
-[data-theme="dark-green"] .flyout-nav {
-    background: linear-gradient(135deg, #1b5e20, #388e3c);
-    border: 1px solid var(--primary-color);
+[data-theme="light-green"] .flyout-nav {
+    background-color: var(--surface-color);
+    border: 1px solid var(--accent-border-color);
 }
 
 [data-theme="pastel-pink"] .flyout-nav {
@@ -972,10 +1049,10 @@ tr.row-highlighted td {
     box-shadow: 0 0 0 0.2rem rgba(185, 28, 28, 0.4);
 }
 
-[data-theme="dark-green"] select:focus,
-[data-theme="dark-green"] input[type="number"]:focus {
+[data-theme="light-green"] select:focus,
+[data-theme="light-green"] input[type="number"]:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.4);
+    box-shadow: 0 0 0 0.2rem rgba(52, 168, 83, 0.25);
 }
 
 [data-theme="pastel-pink"] select:focus,
@@ -1430,4 +1507,349 @@ tr.row-highlighted td {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* --- Макет сторінки та бічна панель --- */
+.page-container {
+    display: flex;
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem; /* Додано проміжок між колонками */
+}
+
+main#main-content {
+    flex: 3; /* Змінено flex-grow для балансу */
+    min-width: 700px; /* Змінено мінімальну ширину */
+    margin: 0.2rem;
+}
+
+/* ЗМІНЕНО: Спільні стилі для обох бічних панелей */
+#filter-sidebar,
+#sorting-sidebar {
+    flex: 1; /* Обидві панелі займають однакову частину простору */
+    min-width: 300px;
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    position: sticky; /* Робить панель "липкою" при скролі */
+    top: 20px;
+}
+
+/* ЗМІНЕНО: Заголовок панелей */
+#filter-sidebar h2,
+#sorting-sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.filter-section {
+    margin-bottom: 1rem;
+}
+
+.filter-section summary {
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+    padding-bottom: 0.5rem;
+}
+
+.filter-section summary h3 {
+    display: inline;
+    font-size: 1.1rem;
+}
+
+.filter-section[open] {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.filter-section:last-of-type[open] {
+    border-bottom: none;
+}
+
+
+.filter-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.filter-options-list label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.filter-options-list input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+}
+
+/* --- Стилі для фільтра дати --- */
+.date-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: 1rem;
+}
+
+.date-inputs-wrapper label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted-color);
+}
+
+/* ЗМІНЕНО: Контейнер для поля вводу та іконки */
+.date-input-container {
+    position: relative;
+}
+
+/* ЗМІНЕНО: Нові універсальні стилі для поля вводу */
+.date-input-container input {
+    width: 100%;
+    padding: 8px 35px 8px 12px; /* Додано відступ справа для іконки */
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-highlight-color);
+    color: var(--text-color);
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+/* ЗМІНЕНО: Стилі для іконки календаря */
+.calendar-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+    font-size: 1.1rem;
+}
+
+header {
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 0;
+}
+
+#searchInput {
+    width: 50%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-highlight-color);
+    color: var(--text-color);
+    margin-top: 1.5rem;
+}
+
+/* --- Основний контейнер новин --- */
+#news-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* --- Картка новини --- */
+.news-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+}
+
+/* --- Заголовок новини --- */
+.news-title {
+    margin: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+/* --- Нижній блок (футер) картки --- */
+.news-footer {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: auto; /* Притискає футер до низу картки */
+}
+
+/* --- Логотип --- */
+.news-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+/* --- Джерело новини (лого + назва) --- */
+.news-source {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- Назва сайту та дата --- */
+.source-name,
+.news-date {
+    font-size: 0.9rem;
+    color: var(--text-muted-color);
+    white-space: nowrap;
+}
+
+.news-icon-container,
+.news-content-container,
+.news-meta {
+    display: none !important;
+}
+
+/* --- Адаптивність --- */
+@media (max-width: 1024px) {
+    .page-container {
+        flex-direction: column;
+        width: 95%;
+    }
+
+    #filter-sidebar {
+        width: 100%;
+        position: static; /* На менших екранах панель не буде "липкою" */
+        margin-bottom: 2rem;
+    }
+}/* --- Основний контейнер новин --- */
+#news-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 90%;
+    /* ЗМЕНШЕНО: Горизонтальна ширина контейнера */
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+.news-type-display {
+    position: absolute; /* Робить позицію незалежною від інших елементів у футері */
+    left: 50%; /* Зміщує лівий край елемента на 50% ширини батьківського контейнера */
+    transform: translateX(-50%); /* Зміщує сам елемент вліво на половину його власної ширини */
+
+    font-size: 0.9rem;
+    color: var(--text-muted-color);
+    text-align: center;
+}
+
+/* --- Світла тема (за замовчуванням) --- */
+body, .theme-light {
+    --modal-bg: #fefefe;
+    --modal-text: #333;
+    --link-color: #007bff;
+    --link-hover-color: #0056b3;
+    --button-bg: #16a085;
+    --button-hover-bg: #117a65;
+    --button-text: #ffffff;
+}
+
+/* --- Світла рожева тема --- */
+.theme-pastel-pink {
+    --modal-bg: #fff0f5;
+    --modal-text: #5c3c45;
+    --link-color: #d94686;
+    --link-hover-color: #c22f6d;
+    --button-bg: #d94686;
+    --button-hover-bg: #c22f6d;
+    --button-text: #ffffff;
+}
+
+/* --- Темні теми (загальне) --- */
+.theme-dark, .theme-dark-purple, .theme-dark-bordeaux, .theme-dark-green {
+    --modal-bg: #2c3e50;
+    --modal-text: #ecf0f1;
+    --link-color: #9ad4d6;
+    --link-hover-color: #ffffff;
+    --button-bg: #1abc9c;
+    --button-hover-bg: #16a085;
+    --button-text: #2c3e50;
+}
+
+/* --- Темна фіолетова --- */
+.theme-dark-purple {
+    --link-color: #d8b4fe;
+    --link-hover-color: #f5ebff;
+    --button-bg: #9b59b6;
+    --button-hover-bg: #8e44ad;
+    --button-text: #ffffff;
+}
+
+/* --- Темна бордова --- */
+.theme-dark-bordeaux {
+    --link-color: #f3a6a6;
+    --link-hover-color: #fce1e1;
+    --button-bg: #c0392b;
+    --button-hover-bg: #a93226;
+    --button-text: #ffffff;
+}
+
+/* --- Темна зелена --- */
+.theme-dark-green {
+    --link-color: #a3e9a4;
+    --link-hover-color: #dcf9dc;
+    --button-bg: #27ae60;
+    --button-hover-bg: #229954;
+    --button-text: #ffffff;
+}
+
+/* --- Стилі для кнопки "Завантажити ще" --- */
+#load-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;   /* Відступ зверху */
+}
+
+#load-more-btn {
+    display: none; /* Приховуємо кнопку за замовчуванням */
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--button-text-color);
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: var(--shadow);
+}
+
+#load-more-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+#load-more-btn:disabled {
+    background-color: var(--text-muted-color);
+    cursor: not-allowed;
+    transform: none;
 }

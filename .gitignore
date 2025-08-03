@@ -63,3 +63,10 @@ node_modules/
 
 # version file
 unnamed.patch
+
+# project files
+calc.zip
+calc_html_working.zip
+всі.db
+app.py
+test.py

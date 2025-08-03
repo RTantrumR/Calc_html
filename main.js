@@ -873,6 +873,33 @@ if (genericModalOverlay) genericModalOverlay.addEventListener('click', (event) =
     }
 });
 
+async function loadNews() {
+    try {
+        // Робимо запит до нашого бек-енду
+        const response = await fetch('http://127.0.0.1:5000/api/news/dtkt');
+        const news = await response.json();
+
+        // Тепер 'news' - це масив з об'єктами новин
+        console.log(news);
+
+        // Тут ви можете створювати HTML-елементи та додавати їх на сторінку
+        const newsContainer = document.getElementById('news-container');
+        newsContainer.innerHTML = ''; // Очищуємо контейнер
+
+        news.forEach(item => {
+            const newsItem = document.createElement('div');
+            newsItem.className = 'news-article';
+            newsItem.innerHTML = `
+                <h3><a href="${item.url}" target="_blank">${item.title}</a></h3>
+                <p>Дата публікації: ${item.date_pub}</p>
+            `;
+            newsContainer.appendChild(newsItem);
+        });
+
+    } catch (error) {
+        console.error('Помилка завантаження новин:', error);
+    }
+}
 
 window.addEventListener("DOMContentLoaded", async () => {
 

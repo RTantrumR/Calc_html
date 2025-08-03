@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бухгалтерські Новини</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" type="module"></script>
+</head>
+<body class="theme-accounting">
+    <div id="aggregator-rules-modal">
+        <div class="modal-content">
+            <h2>Умови користування Агрегатором</h2>
+            <p>
+                Продовжуючи, ви підтверджуєте, що:
+            </p>
+            <ul>
+                <li>Ви вже ознайомилися та погодилися із загальними <a href="terms.html" target="_blank">Умовами користування</a> та <a href="privacy.html" target="_blank">Політикою конфіденційності</a> сайту.</li>
+                <li>Ви погоджуєтесь з окремими <a href="agregator-terms.html" target="_blank">Умовами використання Агрегатора новин</a>.</li>
+            </ul>
+            <button id="aggregator-agree-button">Погоджуюсь</button>
+        </div>
+    </div>
+
+    <div id="flyout-system" class="flyout-system">
+        <div id="flyout-nav" class="flyout-nav">
+            <div class="flyout-nav-content">
+                <a href="index.html" class="nav-option">Головна</a>
+                <a href="calculator.html" class="nav-option">Калькулятор НРЧ</a>
+                <a href="docs.html" class="nav-option">Документи</a>
+                <a href="calc_zp.html" class="nav-option">Калькулятор ЗП</a>
+            </div>
+        </div>
+        <div id="flyout-toggle-btn" class="flyout-toggle-btn">
+            <span class="arrow"></span>
+        </div>
+    </div>
+
+    <div class="theme-switcher-container">
+        <label>Тема:</label>
+        <div class="theme-select-wrapper">
+            <div id="theme-button" class="theme-button" tabindex="0">
+                <span class="theme-text"></span>
+            </div>
+            <div id="theme-dropdown" class="theme-dropdown">
+                <div class="theme-option" data-value="light">Світла</div>
+                <div class="theme-option" data-value="pastel-pink">Світла (рожева)</div>
+                <div class="theme-option" data-value="light-green">Світла (зелена)</div>
+                <div class="theme-option" data-value="dark">Темна</div>
+                <div class="theme-option" data-value="dark-purple">Темна (фіолетова)</div>
+                <div class="theme-option" data-value="dark-bordeaux">Темна (червона)</div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <h1>Агрегатор бухгалтерських новин</h1>
+        <input type="search" id="searchInput" placeholder="Введіть ключові слова для пошуку...">
+    </header>
+
+    <div class="page-container">
+        <aside id="sorting-sidebar">
+            <h2>Сортування</h2>
+            <details class="filter-section" open>
+                <summary><h3>За датою</h3></summary>
+                <div class="filter-options-list">
+                    <label>
+                        <input type="radio" value="date_desc" name="sort_option" checked>
+                        Від нового до старого
+                    </label>
+                    <label>
+                        <input type="radio" value="date_asc" name="sort_option">
+                        Від старого до нового
+                    </label>
+                </div>
+            </details>
+            <details class="filter-section" open>
+                <summary><h3>За назвою</h3></summary>
+                <div class="filter-options-list">
+                    <label>
+                        <input type="radio" value="default" name="sort_option">
+                        Стандартне (без сортування)
+                    </label>
+                    <label>
+                        <input type="radio" value="title_asc" name="sort_option">
+                        Від А до Я
+                    </label>
+                    <label>
+                        <input type="radio" value="title_desc" name="sort_option">
+                        Від Я до А
+                    </label>
+                </div>
+            </details>
+            <details class="filter-section" open>
+                <summary><h3>За популярністю</h3></summary>
+                <div class="filter-options-list">
+                    <label>
+                        <input type="radio" value="views_desc" name="sort_option">
+                        Від найпопулярнішого
+                    </label>
+                    <label>
+                        <input type="radio" value="views_asc" name="sort_option">
+                        Від менш популярного
+                    </label>
+                </div>
+            </details>
+        </aside>
+
+        <main id="main-content">
+            <div id="news-container">
+            </div>
+            <div id="load-more-container">
+                <button id="load-more-btn">Завантажити ще</button>
+        </main>
+
+        <aside id="filter-sidebar">
+            <h2>Фільтри</h2>
+            <details class="filter-section" open>
+                <summary><h3>Сайти</h3></summary>
+                <div id="site-filter-container" class="filter-options-list">
+                </div>
+            </details>
+            <details class="filter-section" open>
+                <summary><h3>Дата публікації</h3></summary>
+                <div id="date-filter-container" class="date-inputs-wrapper">
+                    <label for="start-date-input">Новини з:</label>
+                    <div class="date-input-container">
+                        <input type="text" id="start-date-input" placeholder="ДД.ММ.РРРР">
+                        <span class="calendar-icon">📅</span>
+                    </div>
+                    <label for="end-date-input">Новини по:</label>
+                    <div class="date-input-container">
+                        <input type="text" id="end-date-input" placeholder="ДД.ММ.РРРР">
+                        <span class="calendar-icon">📅</span>
+                    </div>
+                </div>
+            </details>
+            <details class="filter-section" open>
+                <summary><h3>Тип</h3></summary>
+                <div id="type-filter-container" class="filter-options-list">
+                    <label>
+                        <input type="checkbox" value="С" name="news_type">
+                        Стаття
+                    </label>
+                    <label>
+                        <input type="checkbox" value="Н" name="news_type">
+                        Новина
+                    </label>
+                </div>
+            </details>
+        </aside>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <a href="terms.html">Умови користування</a>
+            <span class="footer-separator">|</span>
+            <a href="privacy.html">Політика конфіденційності</a>
+            <span class="footer-separator">|</span>
+            <a href="agregator-terms.html">Умови агрегатора</a>
+            <span class="footer-separator">|</span>
+            <p>Контактна інформація: <a href="mailto:romanq2006+worktimecalculator@gmail.com" id="contact-email">romanq2006+worktimecalculator@gmail.com</a><span id="copy-notification"></span></p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

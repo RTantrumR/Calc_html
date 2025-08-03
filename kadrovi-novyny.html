@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кадрові Новини</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles-drawings.css">
+    <script src="main.js" type="module"></script>
+</head>
+<body class="theme-hr">
+    <header>
+        <h1>Агрегатор кадрових новин</h1>
+        <input type="search" id="searchInput" placeholder="Введіть ключові слова для пошуку...">
+    </header>
+    <main>
+        <div class="theme-switcher-container">
+            <label>Тема:</label>
+            <div class="theme-select-wrapper">
+                <div id="theme-button" class="theme-button" tabindex="0">
+                    <span class="theme-text"></span>
+                </div>
+                <div id="theme-dropdown" class="theme-dropdown">
+                    <div class="theme-option" data-value="light">Світла</div>
+                    <div class="theme-option" data-value="pastel-pink">Світла (рожева)</div>
+                    <div class="theme-option" data-value="light-green">Світла (зелена)</div>
+                    <div class="theme-option" data-value="dark">Темна</div>
+                    <div class="theme-option" data-value="dark-purple">Темна (фіолетова)</div>
+                    <div class="theme-option" data-value="dark-bordeaux">Темна (червона)</div>
+                </div>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="title-column">Заголовок новини</th>
+                    <th class="description-column">Короткий опис новини</th>
+                    <th class="site-column">Назва сайту</th>
+                    <th class="date-column">Дата публікації</th>
+                    <th class="views-column">Перегляди</th>
+                </tr>
+            </thead>
+            <tbody id="news-table-body">
+                </tbody>
+        </table>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

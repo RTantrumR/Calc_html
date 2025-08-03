@@ -844,3 +844,90 @@ body.modal-open, html.modal-open {
 .line-long { width: 90%; }
 .line-medium { width: 75%; }
 .line-short { width: 60%; }
+
+.banner-container {
+    display: flex; /* Розміщуємо банери в один рядок */
+    justify-content: center; /* Рівномірно розподіляємо простір */
+    gap: 20px; /* Відстань між банерами */
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+/* Стилі для кожного банера */
+.banner {
+    flex: 1; /* Кожен банер займає однакову ширину */
+    min-height: 400px; /* Мінімальна висота */
+    max-width: 800px;
+    text-decoration: none; /* Прибираємо підкреслення у посилань */
+    color: white;
+    display: flex;
+    align-items: center; /* Вирівнюємо контент по центру вертикально */
+    justify-content: center; /* Вирівнюємо контент по центру горизонтально */
+    text-align: center;
+    border-radius: 15px; /* Закруглені кути */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Плавні переходи */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ефект при наведенні миші */
+.banner:hover {
+    transform: scale(1.03); /* Злегка збільшуємо банер */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Додаємо тінь */
+}
+
+/* Затемнення для кращої читабельності тексту */
+.banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Чорний напівпрозорий шар */
+    border-radius: 15px;
+}
+
+/* Контент всередині банера */
+.banner-content {
+    position: relative; /* Щоб текст був над затемненням */
+    z-index: 1;
+    padding: 20px;
+}
+
+.banner h2 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.banner p {
+    font-size: 1.2em;
+}
+
+/* Кольори та фонові зображення для банерів */
+.banner-hr {
+    background-color: #005e85; /* Синьо-зелений колір для кадрового розділу */
+    /* background-image: url('path/to/your/hr-image.jpg'); */
+}
+
+.banner-accounting {
+    background-color: #ae2012; /* Насичений червоний для бухгалтерського */
+    /* background-image: url('path/to/your/accounting-image.jpg'); */
+}
+
+/* Адаптивність для мобільних пристроїв */
+@media (max-width: 768px) {
+    .banner-container {
+        flex-direction: column; /* Розміщуємо банери один під одним */
+    }
+
+    .banner {
+        min-height: 200px; /* Зменшуємо висоту на мобільних */
+    }
+
+    .banner h2 {
+        font-size: 2em;
+    }
+}
