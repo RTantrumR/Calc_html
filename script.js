@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const dataSource = 'all';
 
         try {
-            const response = await fetch(`http://95.67.113.226:10841/api/news/${dataSource}?${params.toString()}`);
+            const response = await fetch(`https://95.67.113.226:10841/api/news/${dataSource}?${params.toString()}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const news = await response.json();
 
