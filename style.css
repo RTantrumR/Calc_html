@@ -1517,29 +1517,31 @@ tr.row-highlighted td {
     margin: 0 auto;
     align-items: flex-start;
     justify-content: center;
-    gap: 1rem; /* Додано проміжок між колонками */
+    gap: 1rem;
 }
 
 main#main-content {
-    flex: 3; /* Змінено flex-grow для балансу */
-    min-width: 700px; /* Змінено мінімальну ширину */
+    flex: 3;
+    min-width: 700px;
     margin: 0.2rem;
 }
 
-/* ЗМІНЕНО: Спільні стилі для обох бічних панелей */
 #filter-sidebar,
 #sorting-sidebar {
-    flex: 1; /* Обидві панелі займають однакову частину простору */
+    flex: 1;
     min-width: 300px;
     background-color: var(--surface-color);
     padding: 1.5rem;
+    margin-top: 2.2rem;
     border-radius: 12px;
     box-shadow: var(--shadow);
-    position: sticky; /* Робить панель "липкою" при скролі */
+    position: sticky;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
     top: 20px;
 }
 
-/* ЗМІНЕНО: Заголовок панелей */
+/* Заголовок панелей */
 #filter-sidebar h2,
 #sorting-sidebar h2 {
     margin-top: 0;
@@ -1609,12 +1611,12 @@ main#main-content {
     color: var(--text-muted-color);
 }
 
-/* ЗМІНЕНО: Контейнер для поля вводу та іконки */
+/* Контейнер для поля вводу та іконки */
 .date-input-container {
     position: relative;
 }
 
-/* ЗМІНЕНО: Нові універсальні стилі для поля вводу */
+/* Універсальні стилі для поля вводу */
 .date-input-container input {
     width: 100%;
     padding: 8px 35px 8px 12px; /* Додано відступ справа для іконки */
@@ -1627,7 +1629,7 @@ main#main-content {
     transition: border-color 0.2s, background-color 0.2s;
 }
 
-/* ЗМІНЕНО: Стилі для іконки календаря */
+/* Стилі для іконки календаря */
 .calendar-icon {
     position: absolute;
     right: 10px;
@@ -1697,7 +1699,7 @@ header {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    margin-top: auto; /* Притискає футер до низу картки */
+    margin-top: auto;
 }
 
 /* --- Логотип --- */

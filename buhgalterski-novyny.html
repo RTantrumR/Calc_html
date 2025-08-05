@@ -92,7 +92,15 @@
                 </div>
             </details>
             <details class="filter-section" open>
-                <summary><h3>За популярністю</h3></summary>
+                <summary>
+                  <h3 style="display: inline; margin: 0;">За популярністю</h3>
+                  <span class="tooltip-icon-container" tabindex="0" aria-label="Дисклеймер" style="margin-left: 6px;">
+                    <span class="tooltip-icon" aria-hidden="true">&#9432;</span>
+                    <span class="tooltip-text tooltip-text-right">
+                      Сортування відбувається за даними про популярність, які публічно демонструють самі сайти. Адміністрація агрегатору не несе відповідальності за точність цієї інформації.
+                    </span>
+                  </span>
+                </summary>
                 <div class="filter-options-list">
                     <label>
                         <input type="radio" value="views_desc" name="sort_option">
@@ -111,6 +119,7 @@
             </div>
             <div id="load-more-container">
                 <button id="load-more-btn">Завантажити ще</button>
+            </div>
         </main>
 
         <aside id="filter-sidebar">
