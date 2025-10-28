@@ -23,7 +23,7 @@ function make(tag, text) {
 }
 
 function formatHours(num) {
-    const fixed = (+num).toFixed(1);
+    const fixed = (+num).toFixed(2);
     return parseFloat(fixed);
 }
 
